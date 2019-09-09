@@ -1,3 +1,11 @@
+#board{
+    border: 5px solid red;
+    width: auto;
+    height: auto;
+
+    display: inline-block;
+}
+
 rect:hover{
     fill:red;
     opacity: 0.5;
