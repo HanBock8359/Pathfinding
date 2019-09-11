@@ -10,14 +10,40 @@
     <title>Pathfinding</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="Scripts/grid.css">
+    <link rel="stylesheet" type="text/css" href="Scripts\grid.css">
     <style>
-        td {
-            border: 1px solid black;
-        }
     </style>
     <!-- JavaScript -->
     <script src="Scripts\generateGrid.js"></script>
+    <script src="Scripts\jquery-3.4.1.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            console.log("welcome!");
+            generateGrid();
+
+            $("svg").on("click", function () {
+                let col = Math.floor((event.clientX - 8) / side);
+                let row = Math.floor((event.clientY - 8) / side);
+                console.log(row, col);
+
+                document.getElementById(`${row}-${col}`).setAttribute("fill", "#333");
+                console.log("clicked rect!");
+            });
+
+            $("svg").on("mouseover", function(){
+                let col = Math.floor((event.clientX - 8) / side);
+                let row = Math.floor((event.clientY - 8) / side);
+                console.log(row, col);
+                
+                document.getElementById(`${row}-${col}`).setAttribute("fill", "green");
+                console.log("Hover on a rect!");
+
+            });
+        });
+
+
+    </script>
 
 </head>
 
@@ -45,12 +71,9 @@
             <!-- Choose an algorithm! -->
         </div>
 
-        <div>
-            <button type="button" onclick="generateGrid()">Make Grid!</button>
-        </div>
-
         <div id="board">
-            <svg id="grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg" style="overflow: hidden; position: relative">
+            <svg id="grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"
+                style="overflow: hidden; position: relative">
             </svg>
         </div>
         <!--End of mainGrid -->
