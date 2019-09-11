@@ -1,0 +1,13 @@
+#board{
+    /* border: 5px solid red; */
+    margin: 0;
+    width: auto;
+    height: auto;
+
+    display: inline-block;
+}
+
+/* rect:hover{
+    fill:red;
+    opacity: 0.5;
+} */
