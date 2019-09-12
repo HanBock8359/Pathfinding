@@ -39,11 +39,3 @@ function getWidth() {
 function getheight() {
     return height;
 }
-
-function visited(){
-    document.getElementById("grid").style.fill = "black";
-}
-
-function unvisited(){
-    document.getElementById("grid").style.fill = "white";
-}

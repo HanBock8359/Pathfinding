@@ -9,49 +9,25 @@
     <!-- Title -->
     <title>Pathfinding</title>
 
+    <!-- 
+        * CSS files are located in 'css' folder
+        * Javascript files are located in 'js' folder
+     -->
+
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="js\grid.css">
-    <style>
-    </style>
+    <!-- CSS from other -->
+
+    <!-- Custom CSS files -->
+    <link rel="stylesheet" type="text/css" href="css\grid.css">
+
+
     <!-- JavaScript -->
-    <script src="js\generateGrid.js"></script>
+    <!-- JQuery -->
     <script src="js\jquery-3.4.1.js"></script>
 
-    <script>
-        $(document).ready(function () {
-            console.log("welcome!");
-            generateGrid();
-
-            $(document.body).on("mousedown", function () {
-                console.log("mouse is down!");
-
-                $("svg").on("mouseover", function () {
-                    let col = Math.floor((event.clientX - 8) / side);
-                    let row = Math.floor((event.clientY - 8) / side);
-                    document.getElementById(`${row}-${col}`).setAttribute("fill", "green");
-                    //console.log(row, col);
-                    //console.log("Hover on a rect!");
-
-                });
-            });
-
-            $(document.body).on("mouseup", function () {
-                console.log("mouse is up!");
-            });
-
-            $("svg").on("click", function () {
-                let col = Math.floor((event.clientX - 8) / side);
-                let row = Math.floor((event.clientY - 8) / side);
-                document.getElementById(`${row}-${col}`).setAttribute("fill", "#333");
-                //console.log(row, col);
-                //console.log("clicked rect!");
-            });
-
-
-        });
-
-
-    </script>
+    <!-- Custom Javascript files -->
+    <script src="js\generateGrid.js"></script>
+    <script src="js\mouseEvents.js"></script>
 
 </head>
 
@@ -75,10 +51,7 @@
             <!-- End of mainText -->
         </div>
 
-        <div id="algorithmName">
-            <!-- Choose an algorithm! -->
-        </div>
-
+        <!-- Displays the grid -->
         <div id="board">
             <svg id="grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"
                 style="overflow: hidden; position: relative">
