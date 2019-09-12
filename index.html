@@ -10,36 +10,44 @@
     <title>Pathfinding</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="Scripts\grid.css">
+    <link rel="stylesheet" type="text/css" href="js\grid.css">
     <style>
     </style>
     <!-- JavaScript -->
-    <script src="Scripts\generateGrid.js"></script>
-    <script src="Scripts\jquery-3.4.1.js"></script>
+    <script src="js\generateGrid.js"></script>
+    <script src="js\jquery-3.4.1.js"></script>
 
     <script>
         $(document).ready(function () {
             console.log("welcome!");
             generateGrid();
 
+            $(document.body).on("mousedown", function () {
+                console.log("mouse is down!");
+
+                $("svg").on("mouseover", function () {
+                    let col = Math.floor((event.clientX - 8) / side);
+                    let row = Math.floor((event.clientY - 8) / side);
+                    document.getElementById(`${row}-${col}`).setAttribute("fill", "green");
+                    //console.log(row, col);
+                    //console.log("Hover on a rect!");
+
+                });
+            });
+
+            $(document.body).on("mouseup", function () {
+                console.log("mouse is up!");
+            });
+
             $("svg").on("click", function () {
                 let col = Math.floor((event.clientX - 8) / side);
                 let row = Math.floor((event.clientY - 8) / side);
-                console.log(row, col);
-
                 document.getElementById(`${row}-${col}`).setAttribute("fill", "#333");
-                console.log("clicked rect!");
+                //console.log(row, col);
+                //console.log("clicked rect!");
             });
 
-            $("svg").on("mouseover", function(){
-                let col = Math.floor((event.clientX - 8) / side);
-                let row = Math.floor((event.clientY - 8) / side);
-                console.log(row, col);
-                
-                document.getElementById(`${row}-${col}`).setAttribute("fill", "green");
-                console.log("Hover on a rect!");
 
-            });
         });
 
 
