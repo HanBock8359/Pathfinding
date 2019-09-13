@@ -28,8 +28,6 @@ function generateGrid() {
 
     let grid = document.getElementById("grid");
     grid.innerHTML = tableHTML;
-
-    document.getElementById("grid").addEventListener("onclick", visited());
 }
 
 function getWidth() {
@@ -38,4 +36,24 @@ function getWidth() {
 
 function getheight() {
     return height;
+}
+
+function startPosition(row, col){
+    document.getElementById(`${row}-${col}`).setAttribute("fill", "green");
+}
+
+function endPosition(row, col){
+    document.getElementById(`${row}-${col}`).setAttribute("fill", "red");
+}
+
+function isStartPosition(row, col){
+    return $(`#${row}-${col}`).filter(function(){
+        $(this).attr("fill") === ("green");
+    });
+}
+
+function isEndPosition(row, col){
+    return $(`#${row}-${col}`).filter(function(){
+        $(this).attr("fill") === ("red");
+    });
 }
