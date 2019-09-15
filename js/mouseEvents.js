@@ -1,3 +1,5 @@
+//var grid exists on grid.js
+
 $(document).ready(function () {
     //When mouse is down
     $(document.body).on("mousedown", function () {
@@ -21,8 +23,8 @@ $(document).ready(function () {
 function enableBlocks() {
     console.log("mouseover is abled!");
 
-    let col = Math.floor((event.clientX - 8) / side);
-    let row = Math.floor((event.clientY - 8) / side);
+    let col = Math.floor((event.clientX - 8) / grid.getSide());
+    let row = Math.floor((event.clientY - 8) / grid.getSide());
 
     document.getElementById(`${row}-${col}`).setAttribute("fill", "#333");
 }

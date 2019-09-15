@@ -20,10 +20,6 @@ function generateGrid() {
         This function generates a grid with multiple SVG images (rectangle with size of side x side)
     */
 
-    boardWidth = document.getElementById("board").style.width;
-    boardHeight = document.getElementById("board").style.height;
-    console.log(boardWidth, boardHeight);
-
     document.getElementById("grid").setAttribute("width", width);
     document.getElementById("grid").setAttribute("height", height);
 
