@@ -68,7 +68,7 @@ var grid = {
     },
 
     isEnabledBlock: function(row, col){
-        return document.getElementById(`${row}-${col}`).className == "visited";
+        return document.getElementById(`${row}-${col}`).className == "wall";
     },
 
     isDisabledBlock: function(row, col){
@@ -76,14 +76,14 @@ var grid = {
     },
 
     enableBlocks: function (event) {
-        let col = Math.floor((event.clientX - 8) / this.side);
-        let row = Math.floor((event.clientY - 8) / this.side);
+        let col = Math.floor((event.pageX - 8) / this.side);
+        let row = Math.floor((event.pageY - 8) / this.side);
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
         if (!(this.isStartPosition(row, col) || this.isEndPosition(row, col) || this.isDisabledBlock(row, col))) {
             ele.setAttribute("fill", "#333");
-            ele.setAttribute("class", "visited");
+            ele.setAttribute("class", "wall");
         }
         else {
             console.log("You are at Start or End position!");
@@ -91,8 +91,8 @@ var grid = {
     },
 
     disableBlocks: function (event) {
-        let col = Math.floor((event.clientX - 8) / this.side);
-        let row = Math.floor((event.clientY - 8) / this.side);
+        let col = Math.floor((event.pageX - 8) / this.side);
+        let row = Math.floor((event.pageY - 8) / this.side);
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
@@ -108,11 +108,8 @@ var grid = {
     disableMouseEvent: function () {
         $("svg").off("mouseover click");
 
-    },
-
-    bfs: function () {
-
     }
+
 
 }
 
