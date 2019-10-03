@@ -7,6 +7,31 @@
     display: inline-block;
 }
 
+.start{
+    fill: green;
+}
+
+.end{
+    fill: red;
+}
+
+.visited{
+    fill: #008BF8;
+}
+
+.unvisited{
+    fill: white;
+}
+
+.wall{
+    fill: #000;
+}
+
+
+/* .unvisited{
+    fill: green;
+} */
+
 /* rect:hover{
     fill:red;
     opacity: 0.5;

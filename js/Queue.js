@@ -7,7 +7,7 @@ class Queue{
         this.items.push(item);
     }
 
-    dequeue(item){
+    dequeue(){
         if(this.isEmpty()){
             return "Queue is already empty!";
         }
