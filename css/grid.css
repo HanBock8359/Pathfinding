@@ -17,6 +17,9 @@
 
 .visited{
     fill: #008BF8;
+    animation-name: visited;
+    animation-duration: 2s;
+    /* animation-delay: 2; */
 }
 
 .unvisited{
@@ -25,6 +28,11 @@
 
 .wall{
     fill: #000;
+}
+
+@keyframes visited{
+    0% {fill: white;}
+    100% {fill: #008BF8;}
 }
 
 

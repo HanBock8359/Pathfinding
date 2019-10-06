@@ -4,7 +4,7 @@ var grid = {
     startPosition: [5, 15],      // [row, col]
     endPosition: [5, 35],        // [row, col]
     side: 30,
-    delay: 1000,
+    delay: 500,
 
     generateGrid: function () {
         /*
@@ -41,13 +41,13 @@ var grid = {
     setStartPosition: function (row, col) {
         this.startPosition = [row, col];
         // document.getElementById(`${row}-${col}`).setAttribute("fill", "green");
-        document.getElementById(`${row}-${col}`).setAttribute("class", "start"); 
+        document.getElementById(`${row}-${col}`).setAttribute("class", "start");
     },
 
     setEndPosition: function (row, col) {
         this.endPosition = [row, col];
         // document.getElementById(`${row}-${col}`).setAttribute("fill", "red");
-        document.getElementById(`${row}-${col}`).setAttribute("class", "end"); 
+        document.getElementById(`${row}-${col}`).setAttribute("class", "end");
     },
 
     getStartPosition: function () {
@@ -70,15 +70,15 @@ var grid = {
         // return document.getElementById(`${row}-${col}`).getAttribute("fill") == "red";
     },
 
-    isEnabledBlock: function(row, col){
+    isEnabledBlock: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "wall";
     },
 
-    isUnvisitededBlock: function(row, col){
+    isUnvisitededBlock: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "unvisited";
     },
-    
-    isVisiteddBlock: function(row, col){
+
+    isVisiteddBlock: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "visited";
     },
 
@@ -119,61 +119,96 @@ var grid = {
 
     enableVisited: function (row, col) {
         let ele = document.getElementById(`${row}-${col}`);
-        ele.setAttribute("class", "visited"); 
-        // $(`#${pos[0]}-${pos[1]}`).animate();
-        $(`#${row}-${col}`).fadeOut(this.delay).delay(this.delay).fadeIn(this.delay);
+        ele.setAttribute("class", "visited");
+        console.log("Animation begins!");
+        // $(`#${row}-${col}`).fadeOut(this.delay).delay(this.delay).fadeIn(this.delay);
         // $(`#${pos[0]}-${pos[1]}`).animate({fill: "#008BF8"}, "slow");
     },
 
-    isFree: function(row, col) {
-        if((row >= 0 && row < this.height/this.side) && (col >= 0 && col < this.width/this.side)){
-            if((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)) && (!this.isVisiteddBlock(row, col)))
+    isFree: function (row, col) {
+        if ((row >= 0 && row < this.height / this.side) && (col >= 0 && col < this.width / this.side)) {
+            if ((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)) && (!this.isVisiteddBlock(row, col)))
                 return true;
-            else if(this.isEndPosition(row,col))
+            else if (this.isEndPosition(row, col))
                 return true;
         }
         return false;
     },
 
     //BFS
-    BFS: function(pos){
+    BFS: function (pos) {
+        let count = 1;
         let q = new Queue();
-        let rows = [1,-1,0,0];
-        let cols = [0,0,1,-1];
+        let rows = [1, -1, 0, 0];
+        let cols = [0, 0, 1, -1];
 
         q.enqueue(pos);
         // this.enableVisited(pos);    # It is guaranteeded that the BFS will start at the starting point
 
-        while(!q.isEmpty()){
-            var curr = q.dequeue();
+        while (!q.isEmpty()) {
+            let curr = q.dequeue();
 
             //check if currently on the end point (goal)
-            if(this.isEndPosition(curr[0], curr[1])){
+            if (this.isEndPosition(curr[0], curr[1])) {
                 console.log("You reached the goal!");
                 break;
             }
 
             //loops 4 times
-            //right, left, bottom and top
-            for(let i = 0; i < rows.length; i++){
-                if(this.isFree(curr[0] + rows[i], curr[1] + cols[i])){
-                    // setTimeout(q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]), 3000);
-                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
-
+            //bottom, top, right, left
+            for (let i = 0; i < rows.length; i++) {
+                if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
+                    setTimeout(function(){
+                        console.log("enqueued!");
+                        q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
+                    } , this.delay);
+                    // q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
+                    
                     //if not at the End point (goal)
-                    if(!this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])){
+                    if (!this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
                         this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
                     }
+                    console.log("lol");
                 }
             }
 
         }
-        
-        console.log("BFS done!");
+
+        console.log("BFS Done!");
+    },
+
+    DFS: function (pos) {
+        let rows = [1, -1, 0, 0];
+        let cols = [0, 0, 1, -1];
+        //check if currently on the end point (goal)
+
+        if (this.isEndPosition(pos[0], pos[1])) {
+            console.log("You reached the goal!");
+            console.log("DFS Done!");
+            return;
+        }
+
+        //loops 4 times
+        //bottom, top, right, left
+        for (let i = 0; i < rows.length; i++) {
+            if (this.isFree(pos[0] + rows[i], pos[1] + cols[i])) {
+                //if not at the End point (goal)
+                if (!this.isEndPosition(pos[0] + rows[i], pos[1] + cols[i])) {
+                    this.enableVisited(pos[0] + rows[i], pos[1] + cols[i]);
+                    // this.enableVisited(pos[0] + rows[i], pos[1] + cols[i]);
+                }
+
+                //recursive call
+                this.DFS([pos[0] + rows[i], pos[1] + cols[i]]);
+            }
+        } 
     }
 
 
 }
+
+
+
 
 $(document).ready(function () {
     grid.generateGrid();            //create the grid
@@ -183,6 +218,7 @@ $(document).ready(function () {
     console.log(grid.getStartPosition());
 
     grid.BFS(grid.getStartPosition());
+    // grid.DFS(grid.getStartPosition());
 
     // grid.enableVisited([5,16]);
     // grid.enableVisited([5,17]);
