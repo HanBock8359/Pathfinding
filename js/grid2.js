@@ -5,6 +5,7 @@ var grid = {
     endPosition: [5, 35],        // [row, col]
     side: 30,
     delay: 500,
+    isDfsDone: false,
 
     generateGrid: function () {
         /*
@@ -78,7 +79,7 @@ var grid = {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "unvisited";
     },
 
-    isVisiteddBlock: function (row, col) {
+    isVisitedBlock: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "visited";
     },
 
@@ -120,27 +121,28 @@ var grid = {
     enableVisited: function (row, col) {
         let ele = document.getElementById(`${row}-${col}`);
         ele.setAttribute("class", "visited");
-        console.log("Animation begins!");
-        // $(`#${row}-${col}`).fadeOut(this.delay).delay(this.delay).fadeIn(this.delay);
+        $(`#${row}-${col}`).fadeOut(this.delay).delay(this.delay).fadeIn(this.delay);
         // $(`#${pos[0]}-${pos[1]}`).animate({fill: "#008BF8"}, "slow");
     },
 
     isFree: function (row, col) {
         if ((row >= 0 && row < this.height / this.side) && (col >= 0 && col < this.width / this.side)) {
-            if ((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)) && (!this.isVisiteddBlock(row, col)))
+            if ((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)) && (!this.isVisitedBlock(row, col)))
                 return true;
-            else if (this.isEndPosition(row, col))
-                return true;
+            // else if (this.isEndPosition(row, col))
+            //     return false;
         }
         return false;
     },
 
     //BFS
     BFS: function (pos) {
-        let count = 1;
+        let count = 0;
         let q = new Queue();
-        let rows = [1, -1, 0, 0];
-        let cols = [0, 0, 1, -1];
+
+        //starts from TOP, RIGHT, BOTTOM and LEFT (Clockwise)
+        let rows = [-1, 0, 1, 0];
+        let cols = [0, 1, 0, -1];
 
         q.enqueue(pos);
         // this.enableVisited(pos);    # It is guaranteeded that the BFS will start at the starting point
@@ -149,26 +151,25 @@ var grid = {
             let curr = q.dequeue();
 
             //check if currently on the end point (goal)
-            if (this.isEndPosition(curr[0], curr[1])) {
-                console.log("You reached the goal!");
-                break;
-            }
+            // if (this.isEndPosition(curr[0], curr[1])) {
+            //     console.log("You reached the goal!");
+            //     return;
+            // }
 
             //loops 4 times
             //bottom, top, right, left
             for (let i = 0; i < rows.length; i++) {
+                //if not reached the end position
+                //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
                 if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
-                    setTimeout(function(){
-                        console.log("enqueued!");
-                        q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
-                    } , this.delay);
-                    // q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
-                    
-                    //if not at the End point (goal)
-                    if (!this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
-                        this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
-                    }
-                    console.log("lol");
+                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
+                    this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
+                }
+                //if found the end position
+                //terminate the function
+                else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
+                    console.log("You reached the goal!");
+                    return;
                 }
             }
 
@@ -178,30 +179,35 @@ var grid = {
     },
 
     DFS: function (pos) {
-        let rows = [1, -1, 0, 0];
-        let cols = [0, 0, 1, -1];
-        //check if currently on the end point (goal)
-
-        if (this.isEndPosition(pos[0], pos[1])) {
-            console.log("You reached the goal!");
-            console.log("DFS Done!");
-            return;
-        }
+        //starts from TOP, RIGHT, BOTTOM and LEFT (Clockwise)
+        let rows = [-1, 0, 1, 0];
+        let cols = [0, 1, 0, -1];
 
         //loops 4 times
         //bottom, top, right, left
         for (let i = 0; i < rows.length; i++) {
-            if (this.isFree(pos[0] + rows[i], pos[1] + cols[i])) {
-                //if not at the End point (goal)
-                if (!this.isEndPosition(pos[0] + rows[i], pos[1] + cols[i])) {
-                    this.enableVisited(pos[0] + rows[i], pos[1] + cols[i]);
-                    // this.enableVisited(pos[0] + rows[i], pos[1] + cols[i]);
-                }
+            //if DFS is alreayd done
+            //terminates the function immediately
+            if(this.isDfsDone)
+                return;
 
-                //recursive call
+            //if UP, RIGHT, BOTTOM or LEFT of current position are free AND
+            //DFS is not done yet (end position is not found)
+            //enable neighbours
+            //recursive call
+            if (this.isFree(pos[0] + rows[i], pos[1] + cols[i]) && !this.isDfsDone) {
+                this.enableVisited(pos[0] + rows[i], pos[1] + cols[i]);
                 this.DFS([pos[0] + rows[i], pos[1] + cols[i]]);
             }
-        } 
+            //if found the end position
+            //terminates the function immediately
+            else if (this.isEndPosition(pos[0] + rows[i], pos[1] + cols[i])) {
+                console.log("You reached the goal!");
+                console.log("DFS Done!");
+                this.isDfsDone = true;
+                return;
+            }
+        }
     }
 
 
@@ -212,8 +218,8 @@ var grid = {
 
 $(document).ready(function () {
     grid.generateGrid();            //create the grid
-    grid.setStartPosition(15, 15);   //create start point
-    grid.setEndPosition(8, 35);     //create end point
+    grid.setStartPosition(5, 15);   //create start point
+    grid.setEndPosition(15, 15);     //create end point
 
     console.log(grid.getStartPosition());
 
