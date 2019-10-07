@@ -23,14 +23,18 @@
     <!-- JQuery -->
     <script src="js\jquery-3.4.1.js"></script>
 
+    <!-- JQuery Plug-in -->
+    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+
     <!-- Custom Javascript files -->
-    <script src="js\grid2.js"></script>
+    <script src="js\grid.js"></script>
     <script src="js\mouseEvents.js"></script>
 
     <!-- Pathfinding algorithm -->
     <script src="js\Queue.js"></script>
     <script src="js\Stack.js"></script>
-    <script src="js\Graph.js"></script>
+    <!-- <script src="js\Graph.js"></script> -->
     <!-- <script src="js\BST.js"></script> -->
 
 </head>
@@ -46,24 +50,31 @@
 
     </div>
 
-    <div id="mainGrid">
-        <!-- This div block is to display legends and grid -->
-
-        <div id="mainText">
-            <!-- This div block displays legend -->
-
-            <!-- End of mainText -->
-        </div>
-
-        <!-- Displays the grid -->
-        <div id="board">
-            <svg id="grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"
-                style="overflow: hidden; position: relative">
-            </svg>
-        </div>
-        <!--End of mainGrid -->
+    <div class="draggable-panel">
+        <!-- This div block displays legend -->
+        <button onclick="grid.HelperBFS();">Breadth First Search</button>
+        <button onclick="grid.HelperDFS();">Depth First Search</button>
+        <!-- End of mainText -->
     </div>
 
+    <!-- Displays the grid -->
+    <div id="board">
+        <svg id="grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"
+            style="overflow: hidden; position: relative">
+        </svg>
+    </div>
 </body>
+
+
+<style>
+    .draggable-panel {
+        border: 5px solid red;
+    }
+</style>
+<script>
+    $(function () {
+        $(".draggable-panel").draggable();
+    });
+</script>
 
 </html>

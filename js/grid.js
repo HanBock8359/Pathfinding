@@ -1,61 +1,238 @@
-$(document).ready(function () {
-    //Use backticks (`) for template literals!
-    width = window.innerWidth;
-    height = window.innerHeight;
-    side = 30;
+var grid = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    startPosition: [5, 15],      // [row, col]
+    endPosition: [5, 35],        // [row, col]
+    side: 30,
+    delay: 50,
+    isDfsDone: false,
 
-    console.log(width, height);
-    console.log("welcome!");
-    //generates grid
-    generateGrid();
-    startPosition(5, 10);
-    endPosition(5, 35);
-
-    console.log(isStartPosition(5, 10));
-    console.log(isEndPosition(5, 35));
-});
-
-function generateGrid() {
-    /*
+    generateGrid: function () {
+        /*
         This function generates a grid with multiple SVG images (rectangle with size of side x side)
-    */
+        */
+        document.getElementById("grid").setAttribute("width", `${this.width}`);
+        document.getElementById("grid").setAttribute("height", `${this.height}`);
 
-    document.getElementById("grid").setAttribute("width", width);
-    document.getElementById("grid").setAttribute("height", height);
+        let tableHTML = "";
 
-    let tableHTML = "";
+        for (let r = 0; r < this.height; r += this.side) {
+            for (let c = 0; c < this.width; c += this.side) {
+                tableHTML += `<rect id="${r / this.side}-${c / this.side}" class="unvisited" x="${c}" y="${r}" width="${this.side}" height="${this.side}" r="0" rx="0" ry="0" fill="#ffffff" stroke="#000" stroke-opcaticy="0.2" style="-webkit-tap-highlight-color:rgba(0, 0, 0, 0)"></rect>`;
+                // <rect x="0" y="0" width="30" height="30" r="0" rx="0" ry="0" fill="#ffffff" stroke="#000" stroke-opcaticy="0.2" style="-webkit-tap-highlight-color:rgba(0, 0, 0, 0)"></rect>
+            }
+        }
 
-    for (let r = 0; r < height; r += side) {
-        for (let c = 0; c < width - 2 * side; c += side) {
-            tableHTML += `<rect id="${r / side}-${c / side}" x="${c}" y="${r}" width="${side}" height="${side}" r="0" rx="0" ry="0" fill="#ffffff" stroke="#000" stroke-opcaticy="0.2" style="-webkit-tap-highlight-color:rgba(0, 0, 0, 0)"></rect>`;
-            // <rect x="0" y="0" width="30" height="30" r="0" rx="0" ry="0" fill="#ffffff" stroke="#000" stroke-opcaticy="0.2" style="-webkit-tap-highlight-color:rgba(0, 0, 0, 0)"></rect>
+        let grid = document.getElementById("grid");
+        grid.innerHTML = tableHTML;
+    },
+
+    getWidth: function () {
+        return this.width;
+    },
+
+    getheight: function () {
+        return this.height;
+    },
+
+    getSide: function () {
+        return this.side;
+    },
+
+    setStartPosition: function (row, col) {
+        this.startPosition = [row, col];
+        // document.getElementById(`${row}-${col}`).setAttribute("fill", "green");
+        document.getElementById(`${row}-${col}`).setAttribute("class", "start");
+    },
+
+    setEndPosition: function (row, col) {
+        this.endPosition = [row, col];
+        // document.getElementById(`${row}-${col}`).setAttribute("fill", "red");
+        document.getElementById(`${row}-${col}`).setAttribute("class", "end");
+    },
+
+    getStartPosition: function () {
+        return this.startPosition;
+    },
+
+    getEndPosition: function () {
+        return this.endPosition;
+    },
+
+    isStartPosition: function (row, col) {
+        return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "start";
+        // return (row == this.startPosition[0] && col == this.startPosition[1]);
+        // return document.getElementById(`${row}-${col}`).getAttribute("fill") == "green";
+    },
+
+    isEndPosition: function (row, col) {
+        return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "end";
+        // return (row == this.endPosition[0] && col == this.endPosition[1]);
+        // return document.getElementById(`${row}-${col}`).getAttribute("fill") == "red";
+    },
+
+    isEnabledBlock: function (row, col) {
+        return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "wall";
+    },
+
+    isUnvisitededBlock: function (row, col) {
+        return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "unvisited";
+    },
+
+    isVisitedBlock: function (row, col) {
+        return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "visited";
+    },
+
+    enableBlocks: function (event) {
+        let col = Math.floor((event.pageX - 8) / this.side);
+        let row = Math.floor((event.pageY - 8) / this.side);
+        let ele = document.getElementById(`${row}-${col}`);
+
+        //Checks if the user is clicking on the start or end position
+        if (!(this.isStartPosition(row, col) || this.isEndPosition(row, col))) {
+            // ele.setAttribute("fill", "#333");
+            ele.setAttribute("class", "wall");
+        }
+        else {
+            console.log("You are at Start or End position!");
+        }
+    },
+
+    disableBlocks: function (event) {
+        let col = Math.floor((event.pageX - 8) / this.side);
+        let row = Math.floor((event.pageY - 8) / this.side);
+        let ele = document.getElementById(`${row}-${col}`);
+
+        //Checks if the user is clicking on the start or end position
+        if (!(this.isStartPosition(row, col) || this.isEndPosition(row, col))) {
+            // ele.setAttribute("fill", "#FFF");
+            ele.setAttribute("class", "unvisited");
+        }
+        else {
+            console.log("You are at Start or End position!");
+        }
+    },
+
+    disableMouseEvent: function () {
+        $("svg").off("mouseover click");
+
+    },
+
+    enableVisited: function (row, col) {
+        let ele = document.getElementById(`${row}-${col}`);
+        ele.setAttribute("class", "visited");
+        $(`#${row}-${col}`).fadeOut(this.delay).delay(this.delay).fadeIn(this.delay);
+        // $(`#${pos[0]}-${pos[1]}`).animate({fill: "#008BF8"}, "slow");
+    },
+
+    isFree: function (row, col) {
+        if ((row >= 0 && row < this.height / this.side) && (col >= 0 && col < this.width / this.side)) {
+            if ((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)) && (!this.isVisitedBlock(row, col)))
+                return true;
+            // else if (this.isEndPosition(row, col))
+            //     return false;
+        }
+        return false;
+    },
+
+    HelperBFS: function(){
+        grid.BFS(grid.getStartPosition());
+    },
+
+    //BFS
+    BFS: function (pos) {
+        let q = new Queue();
+
+        //starts from TOP, RIGHT, BOTTOM and LEFT (Clockwise)
+        let rows = [-1, 0, 1, 0];
+        let cols = [0, 1, 0, -1];
+
+        q.enqueue(pos);
+        // this.enableVisited(pos);    # It is guaranteeded that the BFS will start at the starting point
+
+        while (!q.isEmpty()) {
+            let curr = q.dequeue();
+
+            //loops 4 times
+            //bottom, top, right, left
+            for (let i = 0; i < rows.length; i++) {
+                //if not reached the end position
+                //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
+                if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
+                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
+                    this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
+                }
+                //if found the end position
+                //terminate the function
+                else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
+                    console.log("You reached the goal!");
+                    console.log(q.printQueue());
+                    return;
+                }
+            }
+
+        }
+
+        
+        console.log("BFS Done!");
+    },
+
+    HelperDFS: function(){
+        this.isDfsDone = false;
+        grid.DFS(grid.getStartPosition());
+    },
+
+    DFS: function (pos) {
+        //starts from TOP, RIGHT, BOTTOM and LEFT (Clockwise)
+        let rows = [-1, 0, 1, 0];
+        let cols = [0, 1, 0, -1];
+
+        //loops 4 times
+        //bottom, top, right, left
+        for (let i = 0; i < rows.length; i++) {
+            //if DFS is alreayd done
+            //terminates the function immediately
+            if(this.isDfsDone)
+                return;
+
+            //if UP, RIGHT, BOTTOM or LEFT of current position are free AND
+            //DFS is not done yet (end position is not found)
+            //enable neighbours
+            //recursive call
+            if (this.isFree(pos[0] + rows[i], pos[1] + cols[i]) && !this.isDfsDone) {
+                this.enableVisited(pos[0] + rows[i], pos[1] + cols[i]);
+                this.DFS([pos[0] + rows[i], pos[1] + cols[i]]);
+            }
+            //if found the end position
+            //terminates the function immediately
+            else if (this.isEndPosition(pos[0] + rows[i], pos[1] + cols[i])) {
+                console.log("You reached the goal!");
+                console.log("DFS Done!");
+                this.isDfsDone = true;
+                return;
+            }
         }
     }
 
-    let grid = document.getElementById("grid");
-    grid.innerHTML = tableHTML;
+
 }
 
-function getWidth() {
-    return width;
-}
 
-function getheight() {
-    return height;
-}
 
-function startPosition(row, col) {
-    document.getElementById(`${row}-${col}`).setAttribute("fill", "green");
-}
 
-function endPosition(row, col) {
-    document.getElementById(`${row}-${col}`).setAttribute("fill", "red");
-}
+$(document).ready(function () {
+    grid.generateGrid();            //create the grid
+    grid.setStartPosition(5, 15);   //create start point
+    grid.setEndPosition(15, 15);     //create end point
 
-function isStartPosition(row, col) {
-    return document.getElementById(`${row}-${col}`).getAttribute("fill") == "green";
-}
+    console.log(grid.getStartPosition());
 
-function isEndPosition(row, col) {
-    return document.getElementById(`${row}-${col}`).getAttribute("fill") == "red";
-}
+    // grid.HelperBFS();
+    // grid.HelperDFS();
+
+    // grid.enableVisited([5,16]);
+    // grid.enableVisited([5,17]);
+    // grid.enableVisited([5,18]);
+    // grid.enableVisited([5,19]);
+    // grid.enableVisited([5,20]);
+});
