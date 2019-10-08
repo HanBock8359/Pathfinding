@@ -28,9 +28,25 @@
 
 .wall{
     fill: #000;
+
 }
 
-@keyframes visited{
+@keyframes wallAnimation{
+    0% {
+        transform: scale(0.3);
+        fill: rgb(255, 255, 255);
+    }
+    50% {
+        transform: scale(1.3);
+        fill: rgb(179, 179, 179);
+    }
+    100% {
+        transform: scale(1.0);
+        fill: rgb(75, 75, 75);
+    }
+}
+
+@keyframes visitedAnimation{
     0% {fill: white;}
     100% {fill: #008BF8;}
 }
