@@ -41,7 +41,6 @@ body{
 
 .wall{
     fill: #000;
-<<<<<<< HEAD
     animation: wallAnimation;
     animation-duration: 0.3s;
     animation-timing-function: ease-out;
@@ -61,17 +60,10 @@ body{
     75%  {transform: translateY(25px)}
     100% {transform: translateY(0)} */
    
-=======
-
-}
-
-@keyframes wallAnimation{
->>>>>>> 598d8742ff8ea31fd9345ee290ef323976e08d66
     0% {
         transform: scale(0.3);
         fill: rgb(255, 255, 255);
     }
-<<<<<<< HEAD
     50%{
         transform: scale(1.3);
         fill: rgb(120, 197, 255);
@@ -100,21 +92,6 @@ body{
         transform: scale(1.0);
         fill: rgb(70, 70, 70);
     }
-=======
-    50% {
-        transform: scale(1.3);
-        fill: rgb(179, 179, 179);
-    }
-    100% {
-        transform: scale(1.0);
-        fill: rgb(75, 75, 75);
-    }
-}
-
-@keyframes visitedAnimation{
-    0% {fill: white;}
-    100% {fill: #008BF8;}
->>>>>>> 598d8742ff8ea31fd9345ee290ef323976e08d66
 }
 
 

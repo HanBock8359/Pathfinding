@@ -32,3 +32,23 @@ $(document).ready(function () {
 
 });
 
+/*
+function enableBlocks() {
+    let col = Math.floor((event.clientX - 8) / grid.getSide());
+    let row = Math.floor((event.clientY - 8) / grid.getSide());
+
+    //Checks if the user is clicking on the start or end position
+    if(!(grid.isStartPosition(row,col) || grid.isEndPosition(row,col))){
+        document.getElementById(`${row}-${col}`).setAttribute("fill", "#333");
+    }
+    else{
+        console.log("You are at Start or End position!");
+    }
+}
+
+
+function disableBlocks() {
+    $("svg").off("mouseover");
+}
+*/
+
