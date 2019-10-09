@@ -6,6 +6,7 @@ var grid = {
     side: 30,
     delay: 500,
     isDfsDone: false,
+    offset: 8 * 4,
 
     generateGrid: function () {
         /*
@@ -88,8 +89,8 @@ var grid = {
     },
 
     enableBlocks: function (event) {
-        let col = Math.floor((event.pageX - 8) / this.side);
-        let row = Math.floor((event.pageY - 8) / this.side);
+        let col = Math.floor((event.pageX - this.offset) / this.side);
+        let row = Math.floor((event.pageY - this.offset) / this.side);
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
@@ -103,8 +104,8 @@ var grid = {
     },
 
     disableBlocks: function (event) {
-        let col = Math.floor((event.pageX - 8) / this.side);
-        let row = Math.floor((event.pageY - 8) / this.side);
+        let col = Math.floor((event.pageX - this.offset) / this.side);
+        let row = Math.floor((event.pageY - this.offset) / this.side);
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
