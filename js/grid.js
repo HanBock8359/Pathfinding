@@ -1,18 +1,22 @@
 var grid = {
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: 1920,
+    height: 1080,
     startPosition: [5, 15],      // [row, col]
     endPosition: [5, 35],        // [row, col]
     side: 30,
-    delay: 50,
+    delay: 500,
     isDfsDone: false,
 
     generateGrid: function () {
         /*
         This function generates a grid with multiple SVG images (rectangle with size of side x side)
         */
-        document.getElementById("grid").setAttribute("width", `${this.width}`);
-        document.getElementById("grid").setAttribute("height", `${this.height}`);
+        let ele = document.getElementById("grid");
+        ele.setAttribute("width", `${this.width}`);
+        ele.setAttribute("height", `${this.height}`);
+
+        console.log(window.innerWidth, window.innerHeight);
+        console.log(ele.getAttribute("width"), ele.getAttribute("height"));
 
         let tableHTML = "";
 
@@ -25,6 +29,12 @@ var grid = {
 
         let grid = document.getElementById("grid");
         grid.innerHTML = tableHTML;
+    },
+
+    resetGrid: function () {
+        grid.generateGrid();            //create the grid
+        grid.setStartPosition(this.startPosition[0], this.startPosition[1]);   //create start point
+        grid.setEndPosition(this.endPosition[0], this.endPosition[1]);     //create end point
     },
 
     getWidth: function () {
@@ -41,13 +51,11 @@ var grid = {
 
     setStartPosition: function (row, col) {
         this.startPosition = [row, col];
-        // document.getElementById(`${row}-${col}`).setAttribute("fill", "green");
         document.getElementById(`${row}-${col}`).setAttribute("class", "start");
     },
 
     setEndPosition: function (row, col) {
         this.endPosition = [row, col];
-        // document.getElementById(`${row}-${col}`).setAttribute("fill", "red");
         document.getElementById(`${row}-${col}`).setAttribute("class", "end");
     },
 
@@ -61,14 +69,10 @@ var grid = {
 
     isStartPosition: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "start";
-        // return (row == this.startPosition[0] && col == this.startPosition[1]);
-        // return document.getElementById(`${row}-${col}`).getAttribute("fill") == "green";
     },
 
     isEndPosition: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "end";
-        // return (row == this.endPosition[0] && col == this.endPosition[1]);
-        // return document.getElementById(`${row}-${col}`).getAttribute("fill") == "red";
     },
 
     isEnabledBlock: function (row, col) {
@@ -135,13 +139,15 @@ var grid = {
         return false;
     },
 
-    HelperBFS: function(){
+    HelperBFS: function () {
         grid.BFS(grid.getStartPosition());
     },
 
     //BFS
     BFS: function (pos) {
+        let that = this;
         let q = new Queue();
+        let count = 0;
 
         //starts from TOP, RIGHT, BOTTOM and LEFT (Clockwise)
         let rows = [-1, 0, 1, 0];
@@ -158,13 +164,13 @@ var grid = {
             for (let i = 0; i < rows.length; i++) {
                 //if not reached the end position
                 //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
-                if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
-                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
-                    this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
+                if (that.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
+                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]])
+                    that.enableVisited(curr[0] + rows[i], curr[1] + cols[i])
                 }
                 //if found the end position
                 //terminate the function
-                else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
+                else if (that.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
                     console.log("You reached the goal!");
                     console.log(q.printQueue());
                     return;
@@ -173,11 +179,11 @@ var grid = {
 
         }
 
-        
+
         console.log("BFS Done!");
     },
 
-    HelperDFS: function(){
+    HelperDFS: function () {
         this.isDfsDone = false;
         grid.DFS(grid.getStartPosition());
     },
@@ -192,7 +198,7 @@ var grid = {
         for (let i = 0; i < rows.length; i++) {
             //if DFS is alreayd done
             //terminates the function immediately
-            if(this.isDfsDone)
+            if (this.isDfsDone)
                 return;
 
             //if UP, RIGHT, BOTTOM or LEFT of current position are free AND
@@ -216,9 +222,6 @@ var grid = {
 
 
 }
-
-
-
 
 $(document).ready(function () {
     grid.generateGrid();            //create the grid

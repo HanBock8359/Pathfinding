@@ -37,9 +37,12 @@
     <!-- <script src="js\Graph.js"></script> -->
     <!-- <script src="js\BST.js"></script> -->
 
+    <!-- Main -->
+    <!-- <script src="js\main.js"></script> -->
 </head>
 
-<body>
+<!-- Prevent scolling function -->
+<body scroll="no" style="overflow: hidden">
     <div id="navbarDiv">
         <nav>
 
@@ -52,6 +55,7 @@
 
     <div class="draggable-panel">
         <!-- This div block displays legend -->
+        <button onclick="grid.resetGrid();">Reset</button>
         <button onclick="grid.HelperBFS();">Breadth First Search</button>
         <button onclick="grid.HelperDFS();">Depth First Search</button>
         <!-- End of mainText -->
@@ -60,7 +64,7 @@
     <!-- Displays the grid -->
     <div id="board">
         <svg id="grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"
-            style="overflow: hidden; position: relative">
+            style="overflow: hidden; position: relative;">
         </svg>
     </div>
 </body>
