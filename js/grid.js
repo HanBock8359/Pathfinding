@@ -88,13 +88,12 @@ var grid = {
     },
 
     enableBlocks: function (event) {
-        let col = Math.floor((event.pageX - 8) / this.side);
-        let row = Math.floor((event.pageY - 8) / this.side);
+        let col = Math.floor((event.pageX) / this.side);
+        let row = Math.floor((event.pageY) / this.side);
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
         if (!(this.isStartPosition(row, col) || this.isEndPosition(row, col))) {
-            // ele.setAttribute("fill", "#333");
             ele.setAttribute("class", "wall");
         }
         else {
@@ -103,13 +102,12 @@ var grid = {
     },
 
     disableBlocks: function (event) {
-        let col = Math.floor((event.pageX - 8) / this.side);
-        let row = Math.floor((event.pageY - 8) / this.side);
+        let col = Math.floor((event.pageX) / this.side);
+        let row = Math.floor((event.pageY) / this.side);
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
         if (!(this.isStartPosition(row, col) || this.isEndPosition(row, col))) {
-            // ele.setAttribute("fill", "#FFF");
             ele.setAttribute("class", "unvisited");
         }
         else {

@@ -2,22 +2,20 @@
 $(document).ready(function () {
     //When mouse is down
     $(document.body).on("mousedown", function () {
-        $("svg").on("mouseover click", function () {
-            let col = Math.floor((event.pageX - 8) / grid.getSide());
-            let row = Math.floor((event.pageY - 8) / grid.getSide());
+        $("svg").on("mousedown mouseover", function () {
+            let col = Math.floor((event.pageX) / grid.getSide());
+            let row = Math.floor((event.pageY) / grid.getSide());
             let ele = document.getElementById(`${row}-${col}`);
-
-            isMouseDown = true;
 
             console.log(row, col, ele.getAttribute("class"));
 
-            if (ele.getAttribute("class") === "unvisited" && isMouseDown) {
+            if (ele.getAttribute("class") === "unvisited") {
                 grid.enableBlocks(event);
 
             }
-            else if (ele.getAttribute("class") === "wall" && isMouseDown) {
-                grid.disableBlocks(event);
-            }
+            // else if (ele.getAttribute("class") === "wall") {
+            //     grid.disableBlocks(event);
+            // }
 
         });
 

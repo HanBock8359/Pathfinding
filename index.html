@@ -18,14 +18,14 @@
 
     <!-- Custom CSS files -->
     <link rel="stylesheet" type="text/css" href="css\grid.css">
-
+    
     <!-- JavaScript -->
     <!-- JQuery -->
     <script src="js\jquery-3.4.1.js"></script>
 
     <!-- JQuery Plug-in -->
-    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <!-- Custom Javascript files -->
     <script src="js\grid.js"></script>
@@ -43,17 +43,18 @@
 
 <!-- Prevent scolling function -->
 <body scroll="no" style="overflow: hidden">
-    <div id="navbarDiv">
-        <nav>
-
-        </nav>
+    <!-- Displays the grid -->
+    <div id="board">
+        <svg id="grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"
+            style="overflow: hidden; position: relative;">
+        </svg>
     </div>
 
-    <div id="tutorial">
+    <!-- <div id="tutorial">
 
-    </div>
+    </div> -->
 
-    <div class="draggable-panel">
+    <div class="draggable-panel-algorithms">
         <!-- This div block displays legend -->
         <button onclick="grid.resetGrid();">Reset</button>
         <button onclick="grid.HelperBFS();">Breadth First Search</button>
@@ -61,24 +62,23 @@
         <!-- End of mainText -->
     </div>
 
-    <!-- Displays the grid -->
-    <div id="board">
-        <svg id="grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"
-            style="overflow: hidden; position: relative;">
-        </svg>
-    </div>
 </body>
 
-
-<style>
-    .draggable-panel {
-        border: 5px solid red;
-    }
-</style>
 <script>
     $(function () {
         $(".draggable-panel").draggable();
     });
+
+    $('.draggable-panel').draggable({
+    create: function( event, ui ) {
+        $(this).css({
+            top: $(this).position().top,
+            bottom: "auto"
+        });
+    }
+});
+
 </script>
+
 
 </html>
