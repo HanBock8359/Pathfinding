@@ -18,10 +18,11 @@
 
     <!-- Custom CSS files -->
     <link rel="stylesheet" type="text/css" href="css\grid.css">
+    <link rel="stylesheet" type="text/css" href="css\draggable.css">
     
     <!-- JavaScript -->
     <!-- JQuery -->
-    <script src="js\jquery-3.4.1.js"></script>
+    <!-- <script src="js\jquery-3.4.1.js"></script> -->
 
     <!-- JQuery Plug-in -->
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -50,13 +51,21 @@
         </svg>
     </div>
 
-    <!-- <div id="tutorial">
+    <div id="instruction" class="draggable-panel">
+        <header>
+            <h2>How to use</h2>
+            <span id="hide-instruction">Hide</span>
+        </header>
+        <h4>1) Click any <span id="white">WHITE</span> tile and drag to create walls</h4>
+        <h4>2) Click any <span id="black">BLACK</span> tile and drag to delete walls</h4>
+        <h4>3) Click <span id="green">GREEN</span> tile and drag to change the starting position</h4>
+        <h4>4) Click <span id="red">RED</span>  tile and drag to change the ending position</h4>
+        <h4>5) Click buttons to start the search!</h4>
+    </div>
 
-    </div> -->
-
-    <div class="draggable-panel-algorithms">
+    <div id="algorithms" class="draggable-panel">
         <!-- This div block displays legend -->
-        <button onclick="grid.resetGrid();">Reset</button>
+        <button onclick="grid.resetGrid();">Reset Grid</button>
         <button onclick="grid.HelperBFS();">Breadth First Search</button>
         <button onclick="grid.HelperDFS();">Depth First Search</button>
         <!-- End of mainText -->
@@ -68,16 +77,6 @@
     $(function () {
         $(".draggable-panel").draggable();
     });
-
-    $('.draggable-panel').draggable({
-    create: function( event, ui ) {
-        $(this).css({
-            top: $(this).position().top,
-            bottom: "auto"
-        });
-    }
-});
-
 </script>
 
 

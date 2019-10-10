@@ -139,6 +139,7 @@ var grid = {
 
     HelperBFS: function () {
         grid.BFS(grid.getStartPosition());
+        console.log("BFS Done!");
     },
 
     //BFS
@@ -176,14 +177,12 @@ var grid = {
             }
 
         }
-
-
-        console.log("BFS Done!");
     },
 
     HelperDFS: function () {
         this.isDfsDone = false;
         grid.DFS(grid.getStartPosition());
+        console.log("DFS Done!");
     },
 
     DFS: function (pos) {
@@ -211,7 +210,6 @@ var grid = {
             //terminates the function immediately
             else if (this.isEndPosition(pos[0] + rows[i], pos[1] + cols[i])) {
                 console.log("You reached the goal!");
-                console.log("DFS Done!");
                 this.isDfsDone = true;
                 return;
             }
