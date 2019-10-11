@@ -1,4 +1,4 @@
-var grid = {
+var Grid = {
     width: 1920,
     height: 1080,
     startPosition: [5, 15],      // [row, col]
@@ -9,9 +9,9 @@ var grid = {
 
     generateGrid: function () {
         /*
-        This function generates a grid with multiple SVG images (rectangle with size of side x side)
+        This function generates a Grid with multiple SVG images (rectangle with size of side x side)
         */
-        let ele = document.getElementById("grid");
+        let ele = document.getElementById("Grid");
         ele.setAttribute("width", `${this.width}`);
         ele.setAttribute("height", `${this.height}`);
 
@@ -27,14 +27,14 @@ var grid = {
             }
         }
 
-        let grid = document.getElementById("grid");
-        grid.innerHTML = tableHTML;
+        let Grid = document.getElementById("Grid");
+        Grid.innerHTML = tableHTML;
     },
 
     resetGrid: function () {
-        grid.generateGrid();            //create the grid
-        grid.setStartPosition(this.startPosition[0], this.startPosition[1]);   //create start point
-        grid.setEndPosition(this.endPosition[0], this.endPosition[1]);     //create end point
+        Grid.generateGrid();            //create the Grid
+        Grid.setStartPosition(this.startPosition[0], this.startPosition[1]);   //create start point
+        Grid.setEndPosition(this.endPosition[0], this.endPosition[1]);     //create end point
     },
 
     getWidth: function () {
@@ -120,10 +120,13 @@ var grid = {
 
     },
 
-    enableVisited: function (row, col) {
-        let ele = document.getElementById(`${row}-${col}`);
-        ele.setAttribute("class", "visited");
-        $(`#${row}-${col}`).fadeOut(this.delay).delay(this.delay).fadeIn(this.delay);
+    enableVisited: function (row, col, count) {
+        let ele = $(`${row}-${col}`);
+        // ele.setAttribute("class", "visited");
+        setTimeout(function(){
+            ele.setAttribute("class", "visited");
+        }, count * this.delay);
+        // $(`#${row}-${col}`).fadeOut(this.delay).delay(this.delay).fadeIn(this.delay);
         // $(`#${pos[0]}-${pos[1]}`).animate({fill: "#008BF8"}, "slow");
     },
 
@@ -138,7 +141,7 @@ var grid = {
     },
 
     HelperBFS: function () {
-        grid.BFS(grid.getStartPosition());
+        this.BFS(this.getStartPosition());
         console.log("BFS Done!");
     },
 
@@ -157,6 +160,7 @@ var grid = {
 
         while (!q.isEmpty()) {
             let curr = q.dequeue();
+            let element = $(`${curr[0]}-${curr[1]}`);
 
             //loops 4 times
             //bottom, top, right, left
@@ -164,14 +168,14 @@ var grid = {
                 //if not reached the end position
                 //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
                 if (that.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
-                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]])
-                    that.enableVisited(curr[0] + rows[i], curr[1] + cols[i])
+                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
+                    that.enableVisited(curr[0] + rows[i], curr[1] + cols[i], count++);
                 }
                 //if found the end position
                 //terminate the function
                 else if (that.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
                     console.log("You reached the goal!");
-                    console.log(q.printQueue());
+                    // console.log(q.printQueue());
                     return;
                 }
             }
@@ -181,12 +185,13 @@ var grid = {
 
     HelperDFS: function () {
         this.isDfsDone = false;
-        grid.DFS(grid.getStartPosition());
+        this.DFS(this.getStartPosition());
         console.log("DFS Done!");
     },
 
     DFS: function (pos) {
         //starts from TOP, RIGHT, BOTTOM and LEFT (Clockwise)
+        let count = 0;
         let rows = [-1, 0, 1, 0];
         let cols = [0, 1, 0, -1];
 
@@ -203,7 +208,7 @@ var grid = {
             //enable neighbours
             //recursive call
             if (this.isFree(pos[0] + rows[i], pos[1] + cols[i]) && !this.isDfsDone) {
-                this.enableVisited(pos[0] + rows[i], pos[1] + cols[i]);
+                this.enableVisited(pos[0] + rows[i], pos[1] + cols[i], count++);
                 this.DFS([pos[0] + rows[i], pos[1] + cols[i]]);
             }
             //if found the end position
@@ -214,24 +219,32 @@ var grid = {
                 return;
             }
         }
-    }
+    },
 
+    HelperDijkstra: function(){
+        this.Dijkstra();
+    },
+
+    Dijkstra: function(){
+
+    }
 
 }
 
 $(document).ready(function () {
-    grid.generateGrid();            //create the grid
-    grid.setStartPosition(5, 15);   //create start point
-    grid.setEndPosition(15, 15);     //create end point
+    Grid.generateGrid();            //create the Grid
+    Grid.setStartPosition(15, 15);   //create start point
+    Grid.setEndPosition(15, 35);     //create end point
 
-    console.log(grid.getStartPosition());
+    console.log(Grid.getStartPosition());
 
-    // grid.HelperBFS();
-    // grid.HelperDFS();
+    // Grid.HelperBFS();
+    // Grid.HelperDFS();
 
-    // grid.enableVisited([5,16]);
-    // grid.enableVisited([5,17]);
-    // grid.enableVisited([5,18]);
-    // grid.enableVisited([5,19]);
-    // grid.enableVisited([5,20]);
+    // Grid.enableVisited([5,16]);
+    // Grid.enableVisited([5,17]);
+    // Grid.enableVisited([5,18]);
+    // Grid.enableVisited([5,19]);
+    // Grid.enableVisited([5,20]);
 });
+

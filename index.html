@@ -13,30 +13,25 @@
         * CSS files are located in 'css' folder
         * Javascript files are located in 'js' folder
      -->
-    <!-- CSS -->
-    <!-- CSS from other -->
 
-    <!-- Custom CSS files -->
-    <link rel="stylesheet" type="text/css" href="css\grid.css">
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="css\Grid.css">
     <link rel="stylesheet" type="text/css" href="css\draggable.css">
     
     <!-- JavaScript -->
-    <!-- JQuery -->
     <!-- <script src="js\jquery-3.4.1.js"></script> -->
+
+    <script src="js\Queue.js"></script>
+    <script src="js\Stack.js"></script>
+    <!-- <script src="js\Graph.js"></script> -->
+    <!-- <script src="js\BST.js"></script> -->
 
     <!-- JQuery Plug-in -->
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <!-- Custom Javascript files -->
-    <script src="js\grid.js"></script>
+    <script src="js\Grid.js"></script>
     <script src="js\mouseEvents.js"></script>
-
-    <!-- Pathfinding algorithm -->
-    <script src="js\Queue.js"></script>
-    <script src="js\Stack.js"></script>
-    <!-- <script src="js\Graph.js"></script> -->
-    <!-- <script src="js\BST.js"></script> -->
 
     <!-- Main -->
     <!-- <script src="js\main.js"></script> -->
@@ -44,16 +39,16 @@
 
 <!-- Prevent scolling function -->
 <body scroll="no" style="overflow: hidden">
-    <!-- Displays the grid -->
+    <!-- Displays the Grid -->
     <div id="board">
-        <svg id="grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"
+        <svg id="Grid" version="1.1" width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"
             style="overflow: hidden; position: relative;">
         </svg>
     </div>
 
     <div id="instruction" class="draggable-panel">
         <header>
-            <h2>How to use</h2>
+            <h2 class="header_title">How to use</h2>
             <span id="hide-instruction">Hide</span>
         </header>
         <h4>1) Click any <span id="white">WHITE</span> tile and drag to create walls</h4>
@@ -64,10 +59,14 @@
     </div>
 
     <div id="algorithms" class="draggable-panel">
-        <!-- This div block displays legend -->
-        <button onclick="grid.resetGrid();">Reset Grid</button>
-        <button onclick="grid.HelperBFS();">Breadth First Search</button>
-        <button onclick="grid.HelperDFS();">Depth First Search</button>
+        <header>
+            <h2 class="header_title">Algorithms</h2>
+        </header>
+
+        <button onclick="Grid.resetGrid();">Reset Grid</button>
+        <button onclick="Grid.HelperBFS();">Breadth First Search</button>
+        <button onclick="Grid.HelperDFS();">Depth First Search</button>
+        <button onclick="Grid.HelperDijkstra();">Dijkstra</button>
         <!-- End of mainText -->
     </div>
 
