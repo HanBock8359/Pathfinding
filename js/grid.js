@@ -217,18 +217,26 @@ var Grid = {
     },
 
     HelperDijkstra: function(){
-        this.Dijkstra();
+        this.Dijkstra(this.getStartPosition());
+        console.log("Dijkstra Done!");
     },
 
-    Dijkstra: function(){
-
+    Dijkstra: function(pos){
+        let rows = [-1, 0, 1, 0];
+        let cols = [0, 1, 0, -1];
     },
 
     HelperAStar: function(){
-        this.AStar();
+        this.AStar(this.getStartPosition());
+        console.log("A* Done!");
     },
 
-    AStar: function(){
+    AStar: function(pos){
+        let rows = [-1, 0, 1, 0];
+        let cols = [0, 1, 0, -1];
+        let pq = new PriorityQueue();
+
+        
 
     }
 };
