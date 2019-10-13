@@ -120,14 +120,9 @@ var Grid = {
 
     },
 
-    enableVisited: function (row, col, count) {
-        let ele = $(`${row}-${col}`);
-        // ele.setAttribute("class", "visited");
-        setTimeout(function(){
-            ele.setAttribute("class", "visited");
-        }, count * this.delay);
-        // $(`#${row}-${col}`).fadeOut(this.delay).delay(this.delay).fadeIn(this.delay);
-        // $(`#${pos[0]}-${pos[1]}`).animate({fill: "#008BF8"}, "slow");
+    enableVisited: function (row, col) {
+        let ele = document.getElementById(`${row}-${col}`);
+        ele.setAttribute("class", "visited");
     },
 
     isFree: function (row, col) {
@@ -169,7 +164,7 @@ var Grid = {
                 //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
                 if (that.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
                     q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
-                    that.enableVisited(curr[0] + rows[i], curr[1] + cols[i], count++);
+                    that.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
                 }
                 //if found the end position
                 //terminate the function
@@ -208,7 +203,7 @@ var Grid = {
             //enable neighbours
             //recursive call
             if (this.isFree(pos[0] + rows[i], pos[1] + cols[i]) && !this.isDfsDone) {
-                this.enableVisited(pos[0] + rows[i], pos[1] + cols[i], count++);
+                this.enableVisited(pos[0] + rows[i], pos[1] + cols[i]);
                 this.DFS([pos[0] + rows[i], pos[1] + cols[i]]);
             }
             //if found the end position
@@ -227,9 +222,16 @@ var Grid = {
 
     Dijkstra: function(){
 
-    }
+    },
 
-}
+    HelperAStar: function(){
+        this.AStar();
+    },
+
+    AStar: function(){
+
+    }
+};
 
 $(document).ready(function () {
     Grid.generateGrid();            //create the Grid
