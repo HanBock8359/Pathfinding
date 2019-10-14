@@ -11,12 +11,9 @@ var Grid = {
         /*
         This function generates a Grid with multiple SVG images (rectangle with size of side x side)
         */
-        let ele = document.getElementById("Grid");
-        ele.setAttribute("width", `${this.width}`);
-        ele.setAttribute("height", `${this.height}`);
-
-        console.log(window.innerWidth, window.innerHeight);
-        console.log(ele.getAttribute("width"), ele.getAttribute("height"));
+        let grid = document.getElementById("Grid");
+        grid.setAttribute("width", `${this.width}`);
+        grid.setAttribute("height", `${this.height}`);
 
         let tableHTML = "";
 
@@ -27,14 +24,24 @@ var Grid = {
             }
         }
 
-        let Grid = document.getElementById("Grid");
-        Grid.innerHTML = tableHTML;
+        grid.innerHTML = tableHTML;
     },
 
+    //resets the whole grid, except the starting and ending positions
     resetGrid: function () {
         Grid.generateGrid();            //create the Grid
         Grid.setStartPosition(this.startPosition[0], this.startPosition[1]);   //create start point
         Grid.setEndPosition(this.endPosition[0], this.endPosition[1]);     //create end point
+    },
+
+    //resets the visited node
+    resetVisited: function(){
+        let visited = Array.from(document.getElementsByClassName("visited"));
+
+        for(let i = 0; i < visited.length; i++){
+            let ele = document.getElementById(`${visited[i].id}`);
+            ele.setAttribute("class", "unvisited");
+        }
     },
 
     getWidth: function () {
@@ -244,7 +251,7 @@ var Grid = {
 $(document).ready(function () {
     Grid.generateGrid();            //create the Grid
     Grid.setStartPosition(15, 15);   //create start point
-    Grid.setEndPosition(15, 35);     //create end point
+    Grid.setEndPosition(15, 20);     //create end point
 
     console.log(Grid.getStartPosition());
 
