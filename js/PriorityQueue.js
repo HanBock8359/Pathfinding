@@ -21,6 +21,7 @@ PriorityQueue.prototype.enqueue = function (element, priority) {
     let data = new PQElement(element, priority);
     let inserted = false;
 
+    //finds the place where data should be inserted at
     for(let i = 0; i < this.items.length; i++){
         if(this.items[i].getPriority() < data.getPriority()){
             this.items.splice(i, 0, data);
@@ -29,6 +30,7 @@ PriorityQueue.prototype.enqueue = function (element, priority) {
         }
     }
 
+    //data is to be placed at the end
     if(!inserted)
         this.items.push(data);
 }

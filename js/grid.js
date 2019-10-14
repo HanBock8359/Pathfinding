@@ -1,11 +1,12 @@
 var Grid = {
     width: 1920,
     height: 1080,
-    startPosition: [5, 15],      // [row, col]
-    endPosition: [5, 35],        // [row, col]
-    side: 30,
-    delay: 500,
-    isDfsDone: false,
+    startPosition: [5, 15],      // [row, col], default starting point
+    endPosition: [5, 35],        // [row, col], default ending point
+    side: 30,                    // size of sides of a square in the grid
+    delay: 500,                  // delay
+    isDfsDone: false,            // used for DFS algorithm
+    miniGrid: new Astar(this.width/this.side, this.height/this.side),
 
     generateGrid: function () {
         /*
@@ -149,7 +150,6 @@ var Grid = {
 
     //BFS
     BFS: function (pos) {
-        let that = this;
         let q = new Queue();
         let count = 0;
 
@@ -169,13 +169,13 @@ var Grid = {
             for (let i = 0; i < rows.length; i++) {
                 //if not reached the end position
                 //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
-                if (that.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
+                if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
                     q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
-                    that.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
+                    this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
                 }
                 //if found the end position
                 //terminate the function
-                else if (that.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
+                else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
                     console.log("You reached the goal!");
                     // console.log(q.printQueue());
                     return;
