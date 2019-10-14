@@ -59,7 +59,7 @@ button {
     cursor: pointer;
     padding: 4px;
     margin: auto;
-    /* width: 28%; */
+    width: 100%;
 }
 
 /* Span tags */

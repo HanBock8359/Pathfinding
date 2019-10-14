@@ -1,15 +1,25 @@
 class PQElement {
-    constructor(elemenet, priority) {
-        this.elemenet = element;
-        this.priority = priority;
+    constructor(element, total, cost, heuristic) {
+        this.element = element;
+        this.total = total;
+        this.cost = cost;
+        this.heuristic = heuristic;
     }
 
     getElement(){
-        return this.elemenet;
+        return this.element;
     }
 
-    getPriority(){
-        return this.priority;
+    getTotal(){
+        return this.total;
+    }
+
+    getCost(){
+        return this.cost;
+    }
+
+    getHeuristic(){
+        return this.heuristic;
     }
 }
 
@@ -17,13 +27,14 @@ function PriorityQueue() {
     this.items = [];
 }
 
-PriorityQueue.prototype.enqueue = function (element, priority) {
-    let data = new PQElement(element, priority);
+PriorityQueue.prototype.enqueue = function (element, total, cost, heuristic) {
+    let data = new PQElement(element, total, cost, heuristic);
     let inserted = false;
 
     //finds the place where data should be inserted at
+    //for this priority queue, the lowest prioirty (cost) will be placed up front
     for(let i = 0; i < this.items.length; i++){
-        if(this.items[i].getPriority() < data.getPriority()){
+        if(this.items[i].getTotal() > total){
             this.items.splice(i, 0, data);
             inserted = true;
             break;
@@ -64,7 +75,7 @@ PriorityQueue.prototype.printQueue = function () {
     var str = "";
 
     for (var i = 0; i < this.items.length; i++) {
-        str += `[${this.items[i][0]}, ${this.items[i][1]}],\n`;
+        str += `[${this.items[i].getElement()}, ${this.items[i].getTotal()}],\n`;
         // str += this.items[i] + " ";
     }
 

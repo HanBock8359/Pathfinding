@@ -6,7 +6,6 @@ var Grid = {
     side: 30,                    // size of sides of a square in the grid
     delay: 500,                  // delay
     isDfsDone: false,            // used for DFS algorithm
-    miniGrid: new Astar(this.width/this.side, this.height/this.side),
 
     generateGrid: function () {
         /*
@@ -36,10 +35,10 @@ var Grid = {
     },
 
     //resets the visited node
-    resetVisited: function(){
+    resetVisited: function () {
         let visited = Array.from(document.getElementsByClassName("visited"));
 
-        for(let i = 0; i < visited.length; i++){
+        for (let i = 0; i < visited.length; i++) {
             let ele = document.getElementById(`${visited[i].id}`);
             ele.setAttribute("class", "unvisited");
         }
@@ -223,35 +222,103 @@ var Grid = {
         }
     },
 
-    HelperDijkstra: function(){
+    HelperDijkstra: function () {
         this.Dijkstra(this.getStartPosition());
         console.log("Dijkstra Done!");
     },
 
-    Dijkstra: function(pos){
+    Dijkstra: function (pos) {
         let rows = [-1, 0, 1, 0];
         let cols = [0, 1, 0, -1];
     },
 
-    HelperAStar: function(){
+    HelperAStar: function () {
         this.AStar(this.getStartPosition());
         console.log("A* Done!");
     },
 
-    AStar: function(pos){
+    AStar: function (pos) {
         let rows = [-1, 0, 1, 0];
         let cols = [0, 1, 0, -1];
-        let pq = new PriorityQueue();
+        let pq = new PriorityQueue();   // ([row, col], total (f), cost (g), heuristic (h))
+        let path = new Queue();         // ([row, col])
 
-        
+        pq.enqueue(pos, 0, 0, 0);
 
+        while (!pq.isEmpty()) {
+            /*
+                param curr = [row, col], priority
+            */
+
+           console.log(pq.printQueue());
+            let item = pq.dequeue();
+            let curr = item.getElement();
+            path.enqueue(curr);
+
+            console.log(item);
+
+            if (this.isEndPosition(curr[0], curr[1])) {
+                // console.log(path.printQueue());
+                return path;
+            }
+
+            //loops 4 times
+            //bottom, top, right, left
+            for (let i = 0; i < rows.length; i++) {
+                console.log("Currently looking at: " + [curr[0] + rows[i], curr[1] + cols[i]] );
+                //if not reached the end position
+                //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
+                if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
+                    let cost = item.getCost() + 1;
+                    let heuristic = this.getHeuristic([curr[0] + rows[i], curr[1] + cols[i]], this.getEndPosition());
+                    let totalCost = cost + heuristic;
+
+                    console.log("Cost: " + cost);
+                    console.log("Heuristic: " + heuristic);
+                    console.log("Total f(x): " + totalCost);
+                    pq.enqueue([curr[0] + rows[i], curr[1] + cols[i]], totalCost, cost, heuristic);
+                    this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
+                }
+                //if found the end position
+                //terminate the function
+                else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
+                    console.log("You reached the goal and have visited following nodes!");
+                    console.log(path.printQueue());
+                    return path;
+                }
+            }
+        }
+
+        return null;
+    },
+
+    getHeuristic: function (start, end) {
+        let x = Math.abs(start[0] - end[0]);
+        let y = Math.abs(start[1] - end[1]);
+        return x + y;
+    },
+
+    getNeighbors: function (pos) {
+        let rows = [-1, 0, 1, 0];
+        let cols = [0, 1, 0, -1];
+        let neighbours = [];
+
+        //loops 4 times
+        //bottom, top, right, left
+        for (let i = 0; i < rows.length; i++) {
+            if (this.isFree(pos[0] + rows[i], pos[1] + cols[i])) {
+                neighbours.push([curr[0] + rows[i], curr[1] + cols[i]]);
+            }
+        }
+        return neighbours;
     }
+
 };
 
 $(document).ready(function () {
     Grid.generateGrid();            //create the Grid
-    Grid.setStartPosition(15, 15);   //create start point
-    Grid.setEndPosition(15, 20);     //create end point
+    Grid.setStartPosition(15, 5);   //create start point
+    Grid.setEndPosition(5, 25);     //create end point
 
     console.log(Grid.getStartPosition());
 
