@@ -94,13 +94,17 @@ var Grid = {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "visited";
     },
 
+    isTraceBlock: function (row, col) {
+        return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "trace";
+    },
+
     enableBlocks: function (event) {
         let col = Math.floor((event.pageX) / this.side);
         let row = Math.floor((event.pageY) / this.side);
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
-        if (!(this.isStartPosition(row, col) || this.isEndPosition(row, col))) {
+        if (this.isFree(row,col)) {
             ele.setAttribute("class", "wall");
         }
         else {
@@ -134,7 +138,7 @@ var Grid = {
 
     isFree: function (row, col) {
         if ((row >= 0 && row < this.height / this.side) && (col >= 0 && col < this.width / this.side)) {
-            if ((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)))
+            if ((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)) && (!this.isTraceBlock(row, col)))
                 return true;
             // else if (this.isEndPosition(row, col))
             //     return false;
@@ -247,14 +251,10 @@ var Grid = {
 
         while (!pq.isEmpty()) {
             /*
-                param curr = [row, col], priority
+                @param curr = [row, col], priority
             */
-
-           console.log(pq.printQueue());
             let item = pq.dequeue();
             let curr = item.getElement();
-
-            console.log(item);
 
             //if reached to the end position
             if (this.isEndPosition(curr[0], curr[1])) {
@@ -264,17 +264,13 @@ var Grid = {
             //loops 4 times
             //bottom, top, right, left
             for (let i = 0; i < rows.length; i++) {
-                console.log("Currently looking at: " + [curr[0] + rows[i], curr[1] + cols[i]] );
+                console.log("Currently looking at: " + [curr[0] + rows[i], curr[1] + cols[i]]);
                 //if not reached the end position
                 //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
                 if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
                     let cost = item.getCost() + 1;
                     let heuristic = this.getHeuristic([curr[0] + rows[i], curr[1] + cols[i]], this.getEndPosition());
                     let totalCost = cost + heuristic;
-
-                    console.log("Cost: " + cost);
-                    console.log("Heuristic: " + heuristic);
-                    console.log("Total f(x): " + totalCost);
 
                     pq.enqueue([curr[0] + rows[i], curr[1] + cols[i]], totalCost, cost, heuristic, item);
                     this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
@@ -285,14 +281,10 @@ var Grid = {
                     console.log("You reached the goal!");
                     return this.constructPath(item);
                 }
-                //to be deleted
-                else{
-                    console.log("\n");
-                }
             }
         }
 
-        return null;
+        return [];
     },
 
     //uses Manhattan Distance Formula
@@ -318,13 +310,16 @@ var Grid = {
     },
 
     // returns the shortest path from A* algorithm
-    constructPath: function(PQElement){
+    constructPath: function (PQElement) {
         let path = [];
         let currPos = PQElement;
 
         console.log(currPos);
 
-        while(currPos != null){
+        //ignores the starting point
+        while (currPos != null && !this.isStartPosition(currPos.getElement()[0], currPos.getElement()[1])) {
+            let ele = document.getElementById(`${currPos.getElement()[0]}-${currPos.getElement()[1]}`);
+            ele.setAttribute("class", "trace");
             path.push(currPos.getElement());
             currPos = currPos.getParent();
         }

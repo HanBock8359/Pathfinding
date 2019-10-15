@@ -38,6 +38,10 @@ body{
     transform-origin:center;
 }
 
+.trace{
+    fill: rgb(255, 251, 0);
+}
+
 .wall{
     fill: #000;
     animation: wallAnimation;
