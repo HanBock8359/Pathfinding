@@ -134,7 +134,7 @@ var Grid = {
 
     isFree: function (row, col) {
         if ((row >= 0 && row < this.height / this.side) && (col >= 0 && col < this.width / this.side)) {
-            if ((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)) && (!this.isVisitedBlock(row, col)))
+            if ((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)))
                 return true;
             // else if (this.isEndPosition(row, col))
             //     return false;
@@ -232,6 +232,7 @@ var Grid = {
         let cols = [0, 1, 0, -1];
     },
 
+    // A* Algorithm
     HelperAStar: function () {
         this.AStar(this.getStartPosition());
         console.log("A* Done!");
@@ -241,9 +242,8 @@ var Grid = {
         let rows = [-1, 0, 1, 0];
         let cols = [0, 1, 0, -1];
         let pq = new PriorityQueue();   // ([row, col], total (f), cost (g), heuristic (h))
-        let path = new Queue();         // ([row, col])
 
-        pq.enqueue(pos, 0, 0, 0);
+        pq.enqueue(pos, 0, 0, 0, null); // position, total, cost, heuristic, parent
 
         while (!pq.isEmpty()) {
             /*
@@ -253,13 +253,12 @@ var Grid = {
            console.log(pq.printQueue());
             let item = pq.dequeue();
             let curr = item.getElement();
-            path.enqueue(curr);
 
             console.log(item);
 
+            //if reached to the end position
             if (this.isEndPosition(curr[0], curr[1])) {
-                // console.log(path.printQueue());
-                return path;
+                return this.constructPath(new PQElement([curr[0], curr[1]], 0, 0, 0, item));
             }
 
             //loops 4 times
@@ -276,15 +275,19 @@ var Grid = {
                     console.log("Cost: " + cost);
                     console.log("Heuristic: " + heuristic);
                     console.log("Total f(x): " + totalCost);
-                    pq.enqueue([curr[0] + rows[i], curr[1] + cols[i]], totalCost, cost, heuristic);
+
+                    pq.enqueue([curr[0] + rows[i], curr[1] + cols[i]], totalCost, cost, heuristic, item);
                     this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
                 }
                 //if found the end position
                 //terminate the function
                 else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
-                    console.log("You reached the goal and have visited following nodes!");
-                    console.log(path.printQueue());
-                    return path;
+                    console.log("You reached the goal!");
+                    return this.constructPath(item);
+                }
+                //to be deleted
+                else{
+                    console.log("\n");
                 }
             }
         }
@@ -292,6 +295,7 @@ var Grid = {
         return null;
     },
 
+    //uses Manhattan Distance Formula
     getHeuristic: function (start, end) {
         let x = Math.abs(start[0] - end[0]);
         let y = Math.abs(start[1] - end[1]);
@@ -311,6 +315,21 @@ var Grid = {
             }
         }
         return neighbours;
+    },
+
+    // returns the shortest path from A* algorithm
+    constructPath: function(PQElement){
+        let path = [];
+        let currPos = PQElement;
+
+        console.log(currPos);
+
+        while(currPos != null){
+            path.push(currPos.getElement());
+            currPos = currPos.getParent();
+        }
+
+        return path.reverse();
     }
 
 };

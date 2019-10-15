@@ -1,9 +1,10 @@
 class PQElement {
-    constructor(element, total, cost, heuristic) {
+    constructor(element, total, cost, heuristic, parent) {
         this.element = element;
         this.total = total;
         this.cost = cost;
         this.heuristic = heuristic;
+        this.parent = parent;
     }
 
     getElement(){
@@ -21,20 +22,24 @@ class PQElement {
     getHeuristic(){
         return this.heuristic;
     }
+
+    getParent(){
+        return this.parent;
+    }
 }
 
 function PriorityQueue() {
     this.items = [];
 }
 
-PriorityQueue.prototype.enqueue = function (element, total, cost, heuristic) {
-    let data = new PQElement(element, total, cost, heuristic);
+PriorityQueue.prototype.enqueue = function (element, total, cost, heuristic, parent) {
+    let data = new PQElement(element, total, cost, heuristic, parent);
     let inserted = false;
 
     //finds the place where data should be inserted at
     //for this priority queue, the lowest prioirty (cost) will be placed up front
     for(let i = 0; i < this.items.length; i++){
-        if(this.items[i].getTotal() > total){
+        if(this.items[i].getTotal() >= total){
             this.items.splice(i, 0, data);
             inserted = true;
             break;
@@ -75,7 +80,7 @@ PriorityQueue.prototype.printQueue = function () {
     var str = "";
 
     for (var i = 0; i < this.items.length; i++) {
-        str += `[${this.items[i].getElement()}, ${this.items[i].getTotal()}],\n`;
+        str += `[${this.items[i].getElement()}, ${this.items[i].getTotal()}]\n`;
         // str += this.items[i] + " ";
     }
 
