@@ -34,12 +34,21 @@ var Grid = {
         Grid.setEndPosition(this.endPosition[0], this.endPosition[1]);     //create end point
     },
 
-    //resets the visited node
+    //resets the visited node and the traced nodes (shortest path)
     resetVisited: function () {
         let visited = Array.from(document.getElementsByClassName("visited"));
+        let trace = Array.from(document.getElementsByClassName("trace"));
+        let ele = null;
 
         for (let i = 0; i < visited.length; i++) {
-            let ele = document.getElementById(`${visited[i].id}`);
+            //reset visited nodes
+            ele = document.getElementById(`${visited[i].id}`);
+            ele.setAttribute("class", "unvisited");
+        }
+
+        for(let i = 0; i < trace.length; i++){
+            //reset trace nodes
+            ele = document.getElementById(`${trace[i].id}`);
             ele.setAttribute("class", "unvisited");
         }
     },
@@ -226,6 +235,7 @@ var Grid = {
         }
     },
 
+    // Dijkstra Algorithm
     HelperDijkstra: function () {
         this.Dijkstra(this.getStartPosition());
         console.log("Dijkstra Done!");
@@ -234,6 +244,10 @@ var Grid = {
     Dijkstra: function (pos) {
         let rows = [-1, 0, 1, 0];
         let cols = [0, 1, 0, -1];
+
+
+
+        return [];
     },
 
     // A* Algorithm
