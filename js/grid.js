@@ -180,91 +180,75 @@ var Grid = {
     //BFS
     BFS: function (pos) {
         let q = new Queue();
-        let count = 0;
-
-        //starts from TOP, RIGHT, BOTTOM and LEFT (Clockwise)
-        let rows = [-1, 0, 1, 0];
-        let cols = [0, 1, 0, -1];
+        let nodeQ = new Queue();
 
         q.enqueue(pos);
+        nodeQ.enqueue(new Node(pos, null));
 
         while (!q.isEmpty()) {
             let curr = q.dequeue();
+            let currNode = nodeQ.dequeue();
             let neighbours = this.findNeighbours(curr);
 
+            //loops 4 times
+            //top, right, botom, left
             for (let i = 0; i < neighbours.length; i++) {
                 let row = neighbours[i][0];
-                let col = neighbours[i][1]
+                let col = neighbours[i][1];
 
                 //if current neighbour is UNVISITED
-                if(this.isUnvisited(row, col)){
+                if (this.isUnvisited(row, col)) {
                     q.enqueue(neighbours[i]);
+                    nodeQ.enqueue(new Node(neighbours[i], currNode));
                     this.setVisited(row, col);
                 }
                 //if current neighbour is the END
-                else if(this.isEndPosition(row, col)){
+                else if (this.isEndPosition(row, col)) {
                     console.log("You reached the goal!");
-                    return;
+                    this.makePath(currNode);
+                    return this.makePath(currNode);
                 }
             }
-
-            //loops 4 times
-            //bottom, top, right, left
-            // for (let i = 0; i < rows.length; i++) {
-            //     //if not reached the end position
-            //     //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
-            //     if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
-            //         q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
-            //         this.setVisited(curr[0] + rows[i], curr[1] + cols[i]);
-            //     }
-            //     //if found the end position
-            //     //terminate the function
-            //     else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
-            //         console.log("You reached the goal!");
-            //         // console.log(q.printQueue());
-            //         return;
-            //     }
-            // }
-
         }
+
+        //returns an empty list when the shortest path is not found 
+        return [];
     },
 
     HelperDFS: function () {
         this.isDfsDone = false;
-        this.DFS(this.getStartPosition());
+        this.DFS(this.getStartPosition(), new Node(this.getStartPosition(), null));
         console.log("DFS Done!");
     },
 
-    DFS: function (pos) {
-        //starts from TOP, RIGHT, BOTTOM and LEFT (Clockwise)
-        let count = 0;
-        let rows = [-1, 0, 1, 0];
-        let cols = [0, 1, 0, -1];
-
+    DFS: function (pos, parentNode) {
+        let neighbours = this.findNeighbours(pos);
         //loops 4 times
-        //bottom, top, right, left
-        for (let i = 0; i < rows.length; i++) {
+        //top, right, botom, left
+        for (let i = 0; i < neighbours.length; i++) {
             //if DFS is alreayd done
             //terminates the function immediately
             if (this.isDfsDone)
                 return;
 
-            //if UP, RIGHT, BOTTOM or LEFT of current position are free AND
-            //DFS is not done yet (end position is not found)
-            //enable neighbours
-            //recursive call
-            if (this.isFree(pos[0] + rows[i], pos[1] + cols[i]) && !this.isDfsDone) {
-                this.setVisited(pos[0] + rows[i], pos[1] + cols[i]);
-                this.DFS([pos[0] + rows[i], pos[1] + cols[i]]);
+            let row = neighbours[i][0];
+            let col = neighbours[i][1];
+
+            //if current neighbour is UNVISITED
+            if (this.isUnvisited(row, col)) {
+                this.setVisited(row, col);
+                this.DFS(neighbours[i], new Node(neighbours[i], parentNode));
             }
-            //if found the end position
-            //terminates the function immediately
-            else if (this.isEndPosition(pos[0] + rows[i], pos[1] + cols[i])) {
+            //if current neighbour is the END
+            else if (this.isEndPosition(row, col)) {
                 console.log("You reached the goal!");
                 this.isDfsDone = true;
-                return;
+                return this.makePath(parentNode);
             }
         }
+
+        //returns an empty list when the shortest path is not found 
+        return [];
     },
 
     // Dijkstra Algorithm
@@ -274,8 +258,6 @@ var Grid = {
     },
 
     Dijkstra: function (pos) {
-        let rows = [-1, 0, 1, 0];
-        let cols = [0, 1, 0, -1];
         let q = new Queue();
         let nodeQ = new Queue();
 
@@ -285,23 +267,25 @@ var Grid = {
         while (!q.isEmpty()) {
             let curr = q.dequeue();
             let currNode = nodeQ.dequeue();
+            let neighbours = this.findNeighbours(curr);
 
             //loops 4 times
-            //bottom, top, right, left
-            for (let i = 0; i < rows.length; i++) {
-                //if not reached the end position
-                //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
-                if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
-                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
-                    this.setVisited(curr[0] + rows[i], curr[1] + cols[i]);
-                    nodeQ.enqueue(new Node([curr[0] + rows[i], curr[1] + cols[i]], currNode));
+            //top, right, botom, left
+            for (let i = 0; i < neighbours.length; i++) {
+                let row = neighbours[i][0];
+                let col = neighbours[i][1];
+
+                //if current neighbour is UNVISITED
+                if (this.isUnvisited(row, col)) {
+                    q.enqueue(neighbours[i]);
+                    nodeQ.enqueue(new Node(neighbours[i], currNode));
+                    this.setVisited(row, col);
                 }
-                //if found the end position
-                //terminate the function
-                else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
+                //if current neighbour is the END
+                else if (this.isEndPosition(row, col)) {
                     console.log("You reached the goal!");
-                    this.dijkstraPath(currNode);
-                    return this.dijkstraPath(currNode);
+                    this.makePath(currNode);
+                    return this.makePath(currNode);
                 }
             }
         }
@@ -310,11 +294,61 @@ var Grid = {
         return [];
     },
 
-    dijkstraPath: function (Node) {
+    // A* Algorithm
+    HelperAStar: function () {
+        this.AStar(this.getStartPosition());
+        console.log("A* Done!");
+    },
+
+    AStar: function (pos) {
+        let pq = new PriorityQueue();   // ([row, col], total (f), cost (g), heuristic (h))
+        pq.enqueue(pos, 0, 0, 0, null); // position, total, cost, heuristic, parent
+
+        while (!pq.isEmpty()) {
+            /*
+                @param curr = [row, col], priority
+            */
+            let item = pq.dequeue();
+            let curr = item.getElement();
+            let neighbours = this.findNeighbours(curr);
+
+            //loops 4 times
+            //top, right, botom, left
+            for (let i = 0; i < neighbours.length; i++) {
+                let row = neighbours[i][0];
+                let col = neighbours[i][1];
+
+                //if current neighbour is UNVISITED
+                if (this.isUnvisited(row, col)) {
+                    let cost = item.getCost() + 1;
+                    let heuristic = this.getHeuristic(neighbours[i], this.getEndPosition());
+                    let totalCost = cost + heuristic;
+
+                    pq.enqueue(neighbours[i], totalCost, cost, heuristic, item);
+                    this.setVisited(row, col);
+                }
+                //if current neighbour is the END
+                else if (this.isEndPosition(row, col)) {
+                    console.log("You reached the goal!");
+                    return this.constructPath(item);
+                }
+            }
+        }
+
+        //returns empty list if no shortest path is found
+        return [];
+    },
+
+    //uses Manhattan Distance Formula
+    getHeuristic: function (start, end) {
+        let x = Math.abs(start[0] - end[0]);
+        let y = Math.abs(start[1] - end[1]);
+        return x + y;
+    },
+    
+    makePath: function (Node) {
         let path = [];
         let currPos = Node;
-
-        console.log(currPos);
 
         //ignores the starting point
         while (currPos != null && !this.isStartPosition(currPos.getElement()[0], currPos.getElement()[1])) {
@@ -325,78 +359,6 @@ var Grid = {
         }
 
         return path.reverse();
-    },
-
-    // A* Algorithm
-    HelperAStar: function () {
-        this.AStar(this.getStartPosition());
-        console.log("A* Done!");
-    },
-
-    AStar: function (pos) {
-        let rows = [-1, 0, 1, 0];
-        let cols = [0, 1, 0, -1];
-        let pq = new PriorityQueue();   // ([row, col], total (f), cost (g), heuristic (h))
-
-        pq.enqueue(pos, 0, 0, 0, null); // position, total, cost, heuristic, parent
-
-        while (!pq.isEmpty()) {
-            /*
-                @param curr = [row, col], priority
-            */
-            let item = pq.dequeue();
-            let curr = item.getElement();
-
-            //if reached to the end position
-            if (this.isEndPosition(curr[0], curr[1])) {
-                return this.constructPath(new PQElement([curr[0], curr[1]], 0, 0, 0, item));
-            }
-
-            //loops 4 times
-            //bottom, top, right, left
-            for (let i = 0; i < rows.length; i++) {
-                //if not reached the end position
-                //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
-                if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
-                    let cost = item.getCost() + 1;
-                    let heuristic = this.getHeuristic([curr[0] + rows[i], curr[1] + cols[i]], this.getEndPosition());
-                    let totalCost = cost + heuristic;
-
-                    pq.enqueue([curr[0] + rows[i], curr[1] + cols[i]], totalCost, cost, heuristic, item);
-                    this.setVisited(curr[0] + rows[i], curr[1] + cols[i]);
-                }
-                //if found the end position
-                //terminate the function
-                else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
-                    console.log("You reached the goal!");
-                    return this.constructPath(item);
-                }
-            }
-        }
-
-        return [];
-    },
-
-    //uses Manhattan Distance Formula
-    getHeuristic: function (start, end) {
-        let x = Math.abs(start[0] - end[0]);
-        let y = Math.abs(start[1] - end[1]);
-        return x + y;
-    },
-
-    getNeighbors: function (pos) {
-        let rows = [-1, 0, 1, 0];
-        let cols = [0, 1, 0, -1];
-        let neighbours = [];
-
-        //loops 4 times
-        //bottom, top, right, left
-        for (let i = 0; i < rows.length; i++) {
-            if (this.isFree(pos[0] + rows[i], pos[1] + cols[i])) {
-                neighbours.push([curr[0] + rows[i], curr[1] + cols[i]]);
-            }
-        }
-        return neighbours;
     },
 
     // returns the shortest path from A* algorithm
