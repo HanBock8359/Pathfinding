@@ -46,7 +46,7 @@ var Grid = {
             ele.setAttribute("class", "unvisited");
         }
 
-        for(let i = 0; i < trace.length; i++){
+        for (let i = 0; i < trace.length; i++) {
             //reset trace nodes
             ele = document.getElementById(`${trace[i].id}`);
             ele.setAttribute("class", "unvisited");
@@ -91,29 +91,27 @@ var Grid = {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "end";
     },
 
-    isEnabledBlock: function (row, col) {
+    isEnabled: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "wall";
     },
 
-    isUnvisitededBlock: function (row, col) {
+    isUnvisited: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "unvisited";
     },
 
-    isVisitedBlock: function (row, col) {
+    isVisited: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "visited";
     },
 
-    isTraceBlock: function (row, col) {
+    isTrace: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "trace";
     },
 
-    enableBlocks: function (event) {
-        let col = Math.floor((event.pageX) / this.side);
-        let row = Math.floor((event.pageY) / this.side);
+    enableBlocks: function (row, col) {
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
-        if (this.isFree(row,col)) {
+        if (this.isFree(row, col)) {
             ele.setAttribute("class", "wall");
         }
         else {
@@ -121,9 +119,7 @@ var Grid = {
         }
     },
 
-    disableBlocks: function (event) {
-        let col = Math.floor((event.pageX) / this.side);
-        let row = Math.floor((event.pageY) / this.side);
+    disableBlocks: function (row, col) {
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
@@ -137,22 +133,43 @@ var Grid = {
 
     disableMouseEvent: function () {
         $("svg").off("mouseover click");
-
     },
 
-    enableVisited: function (row, col) {
+    setVisited: function (row, col) {
         let ele = document.getElementById(`${row}-${col}`);
         ele.setAttribute("class", "visited");
     },
 
+    setUnvisited: function (row, col) {
+        let ele = document.getElementById(`${row}-${col}`);
+        ele.setAttribute("class", "unvisited");
+    },
+
+    //checks if the mouse is within the grid
     isFree: function (row, col) {
         if ((row >= 0 && row < this.height / this.side) && (col >= 0 && col < this.width / this.side)) {
-            if ((this.isUnvisitededBlock(row, col)) && (!this.isStartPosition(row, col)) && (!this.isTraceBlock(row, col)))
+            if (this.isUnvisited(row, col))
                 return true;
-            // else if (this.isEndPosition(row, col))
-            //     return false;
         }
         return false;
+    },
+
+    // @Param: pos -> [row, col]
+    // returns adjacent neighbours (in order of top, right, bottom, left)
+    // the state of each node (unvisited, visited, start, end, trace) does not matter
+    findNeighbours: function (pos) {
+        let neighbours = [];
+        let rows = [-1, 0, 1, 0];
+        let cols = [0, 1, 0, -1];
+
+        let row = pos[0];
+        let col = pos[1];
+
+        for (let i = 0; i < rows.length; i++) {
+            neighbours.push([row + rows[i], col + cols[i]]);
+        }
+
+        return neighbours;
     },
 
     HelperBFS: function () {
@@ -170,29 +187,44 @@ var Grid = {
         let cols = [0, 1, 0, -1];
 
         q.enqueue(pos);
-        // this.enableVisited(pos);    # It is guaranteeded that the BFS will start at the starting point
 
         while (!q.isEmpty()) {
             let curr = q.dequeue();
-            let element = $(`${curr[0]}-${curr[1]}`);
+            let neighbours = this.findNeighbours(curr);
 
-            //loops 4 times
-            //bottom, top, right, left
-            for (let i = 0; i < rows.length; i++) {
-                //if not reached the end position
-                //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
-                if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
-                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
-                    this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
+            for (let i = 0; i < neighbours.length; i++) {
+                let row = neighbours[i][0];
+                let col = neighbours[i][1]
+
+                //if current neighbour is UNVISITED
+                if(this.isUnvisited(row, col)){
+                    q.enqueue(neighbours[i]);
+                    this.setVisited(row, col);
                 }
-                //if found the end position
-                //terminate the function
-                else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
+                //if current neighbour is the END
+                else if(this.isEndPosition(row, col)){
                     console.log("You reached the goal!");
-                    // console.log(q.printQueue());
                     return;
                 }
             }
+
+            //loops 4 times
+            //bottom, top, right, left
+            // for (let i = 0; i < rows.length; i++) {
+            //     //if not reached the end position
+            //     //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
+            //     if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
+            //         q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
+            //         this.setVisited(curr[0] + rows[i], curr[1] + cols[i]);
+            //     }
+            //     //if found the end position
+            //     //terminate the function
+            //     else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
+            //         console.log("You reached the goal!");
+            //         // console.log(q.printQueue());
+            //         return;
+            //     }
+            // }
 
         }
     },
@@ -222,7 +254,7 @@ var Grid = {
             //enable neighbours
             //recursive call
             if (this.isFree(pos[0] + rows[i], pos[1] + cols[i]) && !this.isDfsDone) {
-                this.enableVisited(pos[0] + rows[i], pos[1] + cols[i]);
+                this.setVisited(pos[0] + rows[i], pos[1] + cols[i]);
                 this.DFS([pos[0] + rows[i], pos[1] + cols[i]]);
             }
             //if found the end position
@@ -244,10 +276,55 @@ var Grid = {
     Dijkstra: function (pos) {
         let rows = [-1, 0, 1, 0];
         let cols = [0, 1, 0, -1];
+        let q = new Queue();
+        let nodeQ = new Queue();
 
+        q.enqueue(pos);
+        nodeQ.enqueue(new Node(pos, null));
 
+        while (!q.isEmpty()) {
+            let curr = q.dequeue();
+            let currNode = nodeQ.dequeue();
 
+            //loops 4 times
+            //bottom, top, right, left
+            for (let i = 0; i < rows.length; i++) {
+                //if not reached the end position
+                //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
+                if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
+                    q.enqueue([curr[0] + rows[i], curr[1] + cols[i]]);
+                    this.setVisited(curr[0] + rows[i], curr[1] + cols[i]);
+                    nodeQ.enqueue(new Node([curr[0] + rows[i], curr[1] + cols[i]], currNode));
+                }
+                //if found the end position
+                //terminate the function
+                else if (this.isEndPosition(curr[0] + rows[i], curr[1] + cols[i])) {
+                    console.log("You reached the goal!");
+                    this.dijkstraPath(currNode);
+                    return this.dijkstraPath(currNode);
+                }
+            }
+        }
+
+        //returns empty list if no shortest path is found
         return [];
+    },
+
+    dijkstraPath: function (Node) {
+        let path = [];
+        let currPos = Node;
+
+        console.log(currPos);
+
+        //ignores the starting point
+        while (currPos != null && !this.isStartPosition(currPos.getElement()[0], currPos.getElement()[1])) {
+            let ele = document.getElementById(`${currPos.getElement()[0]}-${currPos.getElement()[1]}`);
+            ele.setAttribute("class", "trace");
+            path.push(currPos.getElement());
+            currPos = currPos.getParent();
+        }
+
+        return path.reverse();
     },
 
     // A* Algorithm
@@ -278,7 +355,6 @@ var Grid = {
             //loops 4 times
             //bottom, top, right, left
             for (let i = 0; i < rows.length; i++) {
-                console.log("Currently looking at: " + [curr[0] + rows[i], curr[1] + cols[i]]);
                 //if not reached the end position
                 //enqueue UP, RIGHT, BOTTOM and LEFT of current coordinate
                 if (this.isFree(curr[0] + rows[i], curr[1] + cols[i])) {
@@ -287,7 +363,7 @@ var Grid = {
                     let totalCost = cost + heuristic;
 
                     pq.enqueue([curr[0] + rows[i], curr[1] + cols[i]], totalCost, cost, heuristic, item);
-                    this.enableVisited(curr[0] + rows[i], curr[1] + cols[i]);
+                    this.setVisited(curr[0] + rows[i], curr[1] + cols[i]);
                 }
                 //if found the end position
                 //terminate the function
@@ -346,17 +422,8 @@ var Grid = {
 $(document).ready(function () {
     Grid.generateGrid();            //create the Grid
     Grid.setStartPosition(15, 5);   //create start point
-    Grid.setEndPosition(5, 25);     //create end point
+    Grid.setEndPosition(15, 15);     //create end point
 
     console.log(Grid.getStartPosition());
-
-    // Grid.HelperBFS();
-    // Grid.HelperDFS();
-
-    // Grid.enableVisited([5,16]);
-    // Grid.enableVisited([5,17]);
-    // Grid.enableVisited([5,18]);
-    // Grid.enableVisited([5,19]);
-    // Grid.enableVisited([5,20]);
 });
 

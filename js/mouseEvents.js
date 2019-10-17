@@ -9,12 +9,11 @@ $(document).ready(function () {
 
             console.log(row, col, ele.getAttribute("class"));
 
-            if (ele.getAttribute("class") === "unvisited") {
-                Grid.enableBlocks(event);
-
+            if (Grid.isUnvisited(row,col)) {
+                Grid.enableBlocks(row, col);
             }
             // else if (ele.getAttribute("class") === "wall") {
-            //     Grid.disableBlocks(event);
+            //     Grid.disableBlocks(row, col);
             // }
 
         });

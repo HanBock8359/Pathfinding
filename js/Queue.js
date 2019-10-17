@@ -1,3 +1,18 @@
+class Node{
+    constructor(element, parent) {
+        this.element = element;
+        this.parent = parent;
+    }
+
+    getElement(){
+        return this.element;
+    }
+
+    getParent(){
+        return this.parent;
+    }
+}
+
 function Queue() {
     this.items = [];
 }
