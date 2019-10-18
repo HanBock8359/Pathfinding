@@ -4,7 +4,8 @@ var Grid = {
     startPosition: [5, 15],      // [row, col], default starting point
     endPosition: [5, 35],        // [row, col], default ending point
     side: 30,                    // size of sides of a square in the grid
-    delay: 20,                  // delay
+    delay: 20,                   // delay
+    isSearching: false,
     isDfsDone: false,            // used for DFS algorithm
 
     generateGrid: function () {
@@ -91,7 +92,7 @@ var Grid = {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "end";
     },
 
-    isEnabled: function (row, col) {
+    isWall: function (row, col) {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "wall";
     },
 
@@ -107,7 +108,7 @@ var Grid = {
         return (document.getElementById(`${row}-${col}`) === null) ? false : document.getElementById(`${row}-${col}`).getAttribute("class") === "trace";
     },
 
-    enableBlocks: function (row, col) {
+    enableWall: function (row, col) {
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
@@ -119,7 +120,7 @@ var Grid = {
         }
     },
 
-    disableBlocks: function (row, col) {
+    disableWall: function (row, col) {
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
@@ -148,8 +149,27 @@ var Grid = {
     },
 
     setUnvisited: function (row, col) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve("resolved");
+                let ele = document.getElementById(`${row}-${col}`);
+                ele.setAttribute("class", "trace");
+            }, this.delay);
+        });
         let ele = document.getElementById(`${row}-${col}`);
         ele.setAttribute("class", "unvisited");
+    },
+
+    setTrace: function (row, col) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve("resolved");
+                let ele = document.getElementById(`${row}-${col}`);
+                ele.setAttribute("class", "trace");
+            }, this.delay);
+        });
+        // let ele = document.getElementById(`${row}-${col}`);
+        // ele.setAttribute("class", "trace");
     },
 
     //checks if the mouse is within the grid
@@ -213,7 +233,6 @@ var Grid = {
                 //if current neighbour is the END
                 else if (this.isEndPosition(row, col)) {
                     console.log("You reached the goal!");
-                    this.makePath(currNode);
                     return this.makePath(currNode);
                 }
             }
@@ -355,14 +374,14 @@ var Grid = {
     
     // returns the shortest path
     // @Param Node can be the class of Node or PQElement
-    makePath: function (Node) {
+    makePath: async function (Node) {
         let path = [];
         let currPos = Node;
 
         //ignores the starting point
         while (currPos != null && !this.isStartPosition(currPos.getElement()[0], currPos.getElement()[1])) {
             let ele = document.getElementById(`${currPos.getElement()[0]}-${currPos.getElement()[1]}`);
-            ele.setAttribute("class", "trace");
+            await this.setTrace(currPos.getElement()[0], currPos.getElement()[1]);
             path.push(currPos.getElement());
             currPos = currPos.getParent();
         }
