@@ -4,7 +4,7 @@ var Grid = {
     startPosition: [5, 15],      // [row, col], default starting point
     endPosition: [5, 35],        // [row, col], default ending point
     side: 30,                    // size of sides of a square in the grid
-    delay: 500,                  // delay
+    delay: 20,                  // delay
     isDfsDone: false,            // used for DFS algorithm
 
     generateGrid: function () {
@@ -136,8 +136,15 @@ var Grid = {
     },
 
     setVisited: function (row, col) {
-        let ele = document.getElementById(`${row}-${col}`);
-        ele.setAttribute("class", "visited");
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve("resolved");
+                let ele = document.getElementById(`${row}-${col}`);
+                ele.setAttribute("class", "visited");
+            }, this.delay);
+        });
+        // let ele = document.getElementById(`${row}-${col}`);
+        // ele.setAttribute("class", "visited");
     },
 
     setUnvisited: function (row, col) {
@@ -178,7 +185,7 @@ var Grid = {
     },
 
     //BFS
-    BFS: function (pos) {
+    BFS: async function (pos) {
         let q = new Queue();
         let nodeQ = new Queue();
 
@@ -200,7 +207,8 @@ var Grid = {
                 if (this.isUnvisited(row, col)) {
                     q.enqueue(neighbours[i]);
                     nodeQ.enqueue(new Node(neighbours[i], currNode));
-                    this.setVisited(row, col);
+
+                    await this.setVisited(row, col);
                 }
                 //if current neighbour is the END
                 else if (this.isEndPosition(row, col)) {
@@ -221,7 +229,7 @@ var Grid = {
         console.log("DFS Done!");
     },
 
-    DFS: function (pos, parentNode) {
+    DFS: async function (pos, parentNode) {
         let neighbours = this.findNeighbours(pos);
         //loops 4 times
         //top, right, botom, left
@@ -236,8 +244,8 @@ var Grid = {
 
             //if current neighbour is UNVISITED
             if (this.isUnvisited(row, col)) {
-                this.setVisited(row, col);
-                this.DFS(neighbours[i], new Node(neighbours[i], parentNode));
+                await this.setVisited(row, col);
+                await this.DFS(neighbours[i], new Node(neighbours[i], parentNode));
             }
             //if current neighbour is the END
             else if (this.isEndPosition(row, col)) {
@@ -257,7 +265,7 @@ var Grid = {
         console.log("Dijkstra Done!");
     },
 
-    Dijkstra: function (pos) {
+    Dijkstra: async function (pos) {
         let q = new Queue();
         let nodeQ = new Queue();
 
@@ -279,12 +287,11 @@ var Grid = {
                 if (this.isUnvisited(row, col)) {
                     q.enqueue(neighbours[i]);
                     nodeQ.enqueue(new Node(neighbours[i], currNode));
-                    this.setVisited(row, col);
+                    await this.setVisited(row, col);
                 }
                 //if current neighbour is the END
                 else if (this.isEndPosition(row, col)) {
                     console.log("You reached the goal!");
-                    this.makePath(currNode);
                     return this.makePath(currNode);
                 }
             }
@@ -300,7 +307,7 @@ var Grid = {
         console.log("A* Done!");
     },
 
-    AStar: function (pos) {
+    AStar: async function (pos) {
         let pq = new PriorityQueue();   // ([row, col], total (f), cost (g), heuristic (h))
         pq.enqueue(pos, 0, 0, 0, null); // position, total, cost, heuristic, parent
 
@@ -325,12 +332,12 @@ var Grid = {
                     let totalCost = cost + heuristic;
 
                     pq.enqueue(neighbours[i], totalCost, cost, heuristic, item);
-                    this.setVisited(row, col);
+                    await this.setVisited(row, col);
                 }
                 //if current neighbour is the END
                 else if (this.isEndPosition(row, col)) {
                     console.log("You reached the goal!");
-                    return this.constructPath(item);
+                    return this.makePath(item);
                 }
             }
         }
@@ -346,6 +353,8 @@ var Grid = {
         return x + y;
     },
     
+    // returns the shortest path
+    // @Param Node can be the class of Node or PQElement
     makePath: function (Node) {
         let path = [];
         let currPos = Node;
@@ -361,30 +370,12 @@ var Grid = {
         return path.reverse();
     },
 
-    // returns the shortest path from A* algorithm
-    constructPath: function (PQElement) {
-        let path = [];
-        let currPos = PQElement;
-
-        console.log(currPos);
-
-        //ignores the starting point
-        while (currPos != null && !this.isStartPosition(currPos.getElement()[0], currPos.getElement()[1])) {
-            let ele = document.getElementById(`${currPos.getElement()[0]}-${currPos.getElement()[1]}`);
-            ele.setAttribute("class", "trace");
-            path.push(currPos.getElement());
-            currPos = currPos.getParent();
-        }
-
-        return path.reverse();
-    }
-
 };
 
 $(document).ready(function () {
     Grid.generateGrid();            //create the Grid
     Grid.setStartPosition(15, 5);   //create start point
-    Grid.setEndPosition(15, 15);     //create end point
+    Grid.setEndPosition(15, 35);     //create end point
 
     console.log(Grid.getStartPosition());
 });
