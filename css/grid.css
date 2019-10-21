@@ -43,7 +43,7 @@ body{
 }
 
 .wall{
-    fill: #000;
+    fill: rgb(70, 70, 70);
     animation: wallAnimation;
     animation-duration: 0.3s;
     animation-timing-function: ease-out;
@@ -56,6 +56,7 @@ body{
     transform-box:fill-box;
     transform-origin:center;
 }
+
 
 @keyframes visitedAnimation{
     /* 0%   {transform: translateY(0)}
@@ -78,11 +79,6 @@ body{
 }
 
 @keyframes wallAnimation{
-    /* 0%   {transform: translateY(0)}
-    25%  {transform: translateY(-25px)}
-    75%  {transform: translateY(25px)}
-    100% {transform: translateY(0)} */
-   
     0% {
         transform: scale(0.3);
         fill: rgb(255, 255, 255);
@@ -96,13 +92,3 @@ body{
         fill: rgb(70, 70, 70);
     }
 }
-
-
-/* .unvisited{
-    fill: green;
-} */
-
-/* rect:hover{
-    fill:red;
-    opacity: 0.5;
-} */

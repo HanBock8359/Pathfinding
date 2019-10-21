@@ -8,46 +8,48 @@ $(document).ready(function () {
     //When mouse is down
     $(document.body).on("mousedown", function () {
         $("svg").on("mousedown mouseover", function () {
-            isMouseDown = true;
-            let coordinate = toGridCoordinate(event);
-            let row = coordinate[0];
-            let col = coordinate[1];
-            let ele = document.getElementById(`${row}-${col}`);
+            if(!Grid.isSearching){
+                let coordinate = toGridCoordinate(event);
+                let row = coordinate[0];
+                let col = coordinate[1];
+                let ele = document.getElementById(`${row}-${col}`);
 
-            console.log(row, col, ele.getAttribute("class"));
+                console.log(row, col, ele.getAttribute("class"));
 
-            //if not drawing any object
-            //checks which element was clicked on
-            if(!isDrawing()){
-                if (Grid.isUnvisited(row, col))
-                    drawingWall = true;
-                else if (Grid.isWall(row, col)) 
-                    drawingUnvisited = true;
-                else if (Grid.isStartPosition(row, col))
-                    drawingStart = true;
-                else if (Grid.isEndPosition(row, col))
-                    drawingEnd = true;
-            }
-
-
-            if(drawingWall){
-                Grid.enableWall(row, col);
-            }
-            else if(drawingUnvisited){
-                Grid.disableWall(row, col);
-            }
-            else if(drawingStart){
-                if(!Grid.isStartPosition(row,col) && !Grid.isWall(row,col)){
-                    let prevPos = Grid.getStartPosition();
-                    Grid.setStartPosition(row,col);
-                    Grid.setUnvisited(prevPos[0], prevPos[1]);
+                //if not drawing any object
+                //checks which element was clicked on
+                if(!isDrawing()){
+                    if (Grid.isUnvisited(row, col))
+                        drawingWall = true;
+                    else if (Grid.isWall(row, col)) 
+                        drawingUnvisited = true;
+                    else if (Grid.isStartPosition(row, col))
+                        drawingStart = true;
+                    else if (Grid.isEndPosition(row, col))
+                        drawingEnd = true;
                 }
-            }
-            else if(drawingEnd){
-                if(!Grid.isEndPosition(row,col) && !Grid.isWall(row,col)){
-                    let prevPos = Grid.getEndPosition();
-                    Grid.setEndPosition(row,col);
-                    Grid.setUnvisited(prevPos[0], prevPos[1]);
+
+                if(drawingWall){
+                    Grid.enableWall(row, col);
+                }
+                else if(drawingUnvisited){
+                    Grid.disableWall(row, col);
+                }
+                else if(drawingStart){
+                    // if current position is not Start, End and Wall
+                    if(!Grid.isStartPosition(row,col) && !Grid.isEndPosition(row,col) && !Grid.isWall(row,col)){
+                        let prevPos = Grid.getStartPosition();
+                        Grid.setStartPosition(row,col);
+                        Grid.setUnvisited(prevPos[0], prevPos[1]);
+                    }
+                }
+                else if(drawingEnd){
+                    // if current position is not Start, End and Wall
+                    if(!Grid.isStartPosition(row,col) && !Grid.isEndPosition(row,col) && !Grid.isWall(row,col)){
+                        let prevPos = Grid.getEndPosition();
+                        Grid.setEndPosition(row,col);
+                        Grid.setUnvisited(prevPos[0], prevPos[1]);
+                    }
                 }
             }
 

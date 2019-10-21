@@ -1,8 +1,8 @@
 var Grid = {
     width: 1920,
     height: 1080,
-    startPosition: [5, 15],      // [row, col], default starting point
-    endPosition: [5, 35],        // [row, col], default ending point
+    startPosition: [15, 15],      // [row, col], default starting point
+    endPosition: [15, 35],        // [row, col], default ending point
     side: 30,                    // size of sides of a square in the grid
     delay: 20,                   // delay
     isSearching: false,
@@ -112,7 +112,7 @@ var Grid = {
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
-        if (!this.isStartPosition(row, col) || !this.isEndPosition(row, col)) {
+        if (!(this.isStartPosition(row, col) || this.isEndPosition(row, col))) {
             ele.setAttribute("class", "wall");
         }
         else {
@@ -124,7 +124,7 @@ var Grid = {
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
-        if (!this.isStartPosition(row, col) || !this.isEndPosition(row, col)) {
+        if (!(this.isStartPosition(row, col) || this.isEndPosition(row, col))) {
             ele.setAttribute("class", "unvisited");
         }
         else {
@@ -189,6 +189,7 @@ var Grid = {
     },
 
     HelperBFS: function () {
+        this.isSearching = true;
         this.BFS(this.getStartPosition());
         console.log("BFS Done!");
     },
@@ -216,22 +217,23 @@ var Grid = {
                 if (this.isUnvisited(row, col)) {
                     q.enqueue(neighbours[i]);
                     nodeQ.enqueue(new Node(neighbours[i], currNode));
-
                     await this.setVisited(row, col);
                 }
                 //if current neighbour is the END
                 else if (this.isEndPosition(row, col)) {
                     console.log("You reached the goal!");
-                    return this.makePath(currNode);
+                    return this.makeShortestPath(currNode);
                 }
             }
         }
 
         //returns an empty list when the shortest path is not found 
+        this.isSearching = false;
         return [];
     },
 
     HelperDFS: function () {
+        this.isSearching = true;
         this.isDfsDone = false;
         this.DFS(this.getStartPosition(), new Node(this.getStartPosition(), null));
         console.log("DFS Done!");
@@ -257,18 +259,19 @@ var Grid = {
             }
             //if current neighbour is the END
             else if (this.isEndPosition(row, col)) {
-                console.log("You reached the goal!");
                 this.isDfsDone = true;
-                return this.makePath(parentNode);
+                return this.makeShortestPath(parentNode);
             }
         }
 
         //returns an empty list when the shortest path is not found 
+        this.isSearching = false;
         return [];
     },
 
     // Dijkstra Algorithm
     HelperDijkstra: function () {
+        this.isSearching = true;
         this.Dijkstra(this.getStartPosition());
         console.log("Dijkstra Done!");
     },
@@ -300,17 +303,19 @@ var Grid = {
                 //if current neighbour is the END
                 else if (this.isEndPosition(row, col)) {
                     console.log("You reached the goal!");
-                    return this.makePath(currNode);
+                    return this.makeShortestPath(currNode);
                 }
             }
         }
 
         //returns empty list if no shortest path is found
+        this.isSearching = false;
         return [];
     },
 
     // A* Algorithm
     HelperAStar: function () {
+        this.isSearching = true;
         this.AStar(this.getStartPosition());
         console.log("A* Done!");
     },
@@ -345,12 +350,13 @@ var Grid = {
                 //if current neighbour is the END
                 else if (this.isEndPosition(row, col)) {
                     console.log("You reached the goal!");
-                    return this.makePath(item);
+                    return this.makeShortestPath(item);
                 }
             }
         }
 
         //returns empty list if no shortest path is found
+        this.isSearching = false;
         return [];
     },
 
@@ -363,7 +369,7 @@ var Grid = {
 
     // returns the shortest path
     // @Param Node can be the class of Node or PQElement
-    makePath: async function (Node) {
+    makeShortestPath: async function (Node) {
         let path = [];
         let currPos = Node;
 
@@ -375,16 +381,9 @@ var Grid = {
             currPos = currPos.getParent();
         }
 
+        this.isSearching = false;
         return path.reverse();
     },
 
 };
-
-$(document).ready(function () {
-    Grid.generateGrid();            //create the Grid
-    Grid.setStartPosition(15, 5);   //create start point
-    Grid.setEndPosition(15, 35);     //create end point
-
-    console.log(Grid.getStartPosition());
-});
 
