@@ -112,7 +112,7 @@ var Grid = {
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
-        if (this.isFree(row, col)) {
+        if (!this.isStartPosition(row, col) || !this.isEndPosition(row, col)) {
             ele.setAttribute("class", "wall");
         }
         else {
@@ -124,16 +124,12 @@ var Grid = {
         let ele = document.getElementById(`${row}-${col}`);
 
         //Checks if the user is clicking on the start or end position
-        if (!(this.isStartPosition(row, col) || this.isEndPosition(row, col))) {
+        if (!this.isStartPosition(row, col) || !this.isEndPosition(row, col)) {
             ele.setAttribute("class", "unvisited");
         }
         else {
             console.log("You are at Start or End position!");
         }
-    },
-
-    disableMouseEvent: function () {
-        $("svg").off("mouseover click");
     },
 
     setVisited: function (row, col) {
@@ -149,13 +145,6 @@ var Grid = {
     },
 
     setUnvisited: function (row, col) {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve("resolved");
-                let ele = document.getElementById(`${row}-${col}`);
-                ele.setAttribute("class", "trace");
-            }, this.delay);
-        });
         let ele = document.getElementById(`${row}-${col}`);
         ele.setAttribute("class", "unvisited");
     },
@@ -371,7 +360,7 @@ var Grid = {
         let y = Math.abs(start[1] - end[1]);
         return x + y;
     },
-    
+
     // returns the shortest path
     // @Param Node can be the class of Node or PQElement
     makePath: async function (Node) {

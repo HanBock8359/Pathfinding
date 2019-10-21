@@ -1,4 +1,9 @@
 //var Grid exists on Grid.js
+drawingWall = false;
+drawingUnvisited = false;
+drawingStart = false;
+drawingEnd = false;
+
 $(document).ready(function () {
     //When mouse is down
     $(document.body).on("mousedown", function () {
@@ -11,31 +16,69 @@ $(document).ready(function () {
 
             console.log(row, col, ele.getAttribute("class"));
 
-            if (Grid.isUnvisited(row,col)) {
+            //if not drawing any object
+            //checks which element was clicked on
+            if(!isDrawing()){
+                if (Grid.isUnvisited(row, col))
+                    drawingWall = true;
+                else if (Grid.isWall(row, col)) 
+                    drawingUnvisited = true;
+                else if (Grid.isStartPosition(row, col))
+                    drawingStart = true;
+                else if (Grid.isEndPosition(row, col))
+                    drawingEnd = true;
+            }
+
+
+            if(drawingWall){
                 Grid.enableWall(row, col);
             }
-            else if (Grid.isWall(row,col)){
-                // Grid.disableWall(row, col);
+            else if(drawingUnvisited){
+                Grid.disableWall(row, col);
             }
-            else if (Grid.isStartPosition(row,col)){
+            else if(drawingStart){
+                if(!Grid.isStartPosition(row,col) && !Grid.isWall(row,col)){
+                    let prevPos = Grid.getStartPosition();
+                    Grid.setStartPosition(row,col);
+                    Grid.setUnvisited(prevPos[0], prevPos[1]);
+                }
+            }
+            else if(drawingEnd){
+                if(!Grid.isEndPosition(row,col) && !Grid.isWall(row,col)){
+                    let prevPos = Grid.getEndPosition();
+                    Grid.setEndPosition(row,col);
+                    Grid.setUnvisited(prevPos[0], prevPos[1]);
+                }
+            }
 
-            }
-            else if (Grid.isEndPosition(row,col)){
-
-            }
         });
     });
 
     //When mouse is up
     $(document.body).on("mouseup", function () {
-        isMouseDown = false;
-        Grid.disableMouseEvent();
+        disableMouseEvent();
     });
 
 });
 
-function toGridCoordinate(event){
+function toGridCoordinate(event) {
     let col = Math.floor((event.pageX) / Grid.getSide());
     let row = Math.floor((event.pageY) / Grid.getSide());
     return [row, col];
+}
+
+
+// disables MouseEvent
+function disableMouseEvent() {
+    drawingStart = false;
+    drawingEnd = false;
+    drawingWall = false;
+    drawingUnvisited = false;
+    $("svg").off("mouseover click");
+}
+
+// returns false if drawing nothing
+// returns true if currently drawing any of four elements
+function isDrawing(){
+    return (drawingWall || drawingUnvisited || drawingStart || drawingEnd);
 }
