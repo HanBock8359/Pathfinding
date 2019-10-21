@@ -164,8 +164,7 @@ var Grid = {
     //checks if the mouse is within the grid
     isFree: function (row, col) {
         if ((row >= 0 && row < this.height / this.side) && (col >= 0 && col < this.width / this.side)) {
-            if (this.isUnvisited(row, col))
-                return true;
+            return true;
         }
         return false;
     },
@@ -189,9 +188,9 @@ var Grid = {
     },
 
     HelperBFS: function () {
+        this.resetVisited();
         this.isSearching = true;
         this.BFS(this.getStartPosition());
-        console.log("BFS Done!");
     },
 
     //BFS
@@ -233,10 +232,10 @@ var Grid = {
     },
 
     HelperDFS: function () {
+        this.resetVisited();
         this.isSearching = true;
         this.isDfsDone = false;
         this.DFS(this.getStartPosition(), new Node(this.getStartPosition(), null));
-        console.log("DFS Done!");
     },
 
     DFS: async function (pos, parentNode) {
@@ -271,9 +270,9 @@ var Grid = {
 
     // Dijkstra Algorithm
     HelperDijkstra: function () {
+        this.resetVisited();
         this.isSearching = true;
         this.Dijkstra(this.getStartPosition());
-        console.log("Dijkstra Done!");
     },
 
     Dijkstra: async function (pos) {
@@ -315,9 +314,9 @@ var Grid = {
 
     // A* Algorithm
     HelperAStar: function () {
+        this.resetVisited();
         this.isSearching = true;
         this.AStar(this.getStartPosition());
-        console.log("A* Done!");
     },
 
     AStar: async function (pos) {
