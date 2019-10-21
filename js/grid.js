@@ -30,27 +30,31 @@ var Grid = {
 
     //resets the whole grid, except the starting and ending positions
     resetGrid: function () {
-        Grid.generateGrid();            //create the Grid
-        Grid.setStartPosition(this.startPosition[0], this.startPosition[1]);   //create start point
-        Grid.setEndPosition(this.endPosition[0], this.endPosition[1]);     //create end point
+        if (!this.isSearching) {
+            Grid.generateGrid();            //create the Grid
+            Grid.setStartPosition(this.startPosition[0], this.startPosition[1]);   //create start point
+            Grid.setEndPosition(this.endPosition[0], this.endPosition[1]);     //create end point
+        }
     },
 
     //resets the visited node and the traced nodes (shortest path)
     resetVisited: function () {
-        let visited = Array.from(document.getElementsByClassName("visited"));
-        let trace = Array.from(document.getElementsByClassName("trace"));
-        let ele = null;
+        if (!this.isSearching) {
+            let visited = Array.from(document.getElementsByClassName("visited"));
+            let trace = Array.from(document.getElementsByClassName("trace"));
+            let ele = null;
 
-        for (let i = 0; i < visited.length; i++) {
-            //reset visited nodes
-            ele = document.getElementById(`${visited[i].id}`);
-            ele.setAttribute("class", "unvisited");
-        }
+            for (let i = 0; i < visited.length; i++) {
+                //reset visited nodes
+                ele = document.getElementById(`${visited[i].id}`);
+                ele.setAttribute("class", "unvisited");
+            }
 
-        for (let i = 0; i < trace.length; i++) {
-            //reset trace nodes
-            ele = document.getElementById(`${trace[i].id}`);
-            ele.setAttribute("class", "unvisited");
+            for (let i = 0; i < trace.length; i++) {
+                //reset trace nodes
+                ele = document.getElementById(`${trace[i].id}`);
+                ele.setAttribute("class", "unvisited");
+            }
         }
     },
 
@@ -188,9 +192,11 @@ var Grid = {
     },
 
     HelperBFS: function () {
-        this.resetVisited();
-        this.isSearching = true;
-        this.BFS(this.getStartPosition());
+        if (!this.isSearching) {
+            this.resetVisited();
+            this.isSearching = true;
+            this.BFS(this.getStartPosition());
+        }
     },
 
     //BFS
@@ -232,10 +238,12 @@ var Grid = {
     },
 
     HelperDFS: function () {
-        this.resetVisited();
-        this.isSearching = true;
-        this.isDfsDone = false;
-        this.DFS(this.getStartPosition(), new Node(this.getStartPosition(), null));
+        if (!this.isSearching) {
+            this.resetVisited();
+            this.isSearching = true;
+            this.isDfsDone = false;
+            this.DFS(this.getStartPosition(), new Node(this.getStartPosition(), null));
+        }
     },
 
     DFS: async function (pos, parentNode) {
@@ -270,9 +278,11 @@ var Grid = {
 
     // Dijkstra Algorithm
     HelperDijkstra: function () {
-        this.resetVisited();
-        this.isSearching = true;
-        this.Dijkstra(this.getStartPosition());
+        if (!this.isSearching) {
+            this.resetVisited();
+            this.isSearching = true;
+            this.Dijkstra(this.getStartPosition());
+        }
     },
 
     Dijkstra: async function (pos) {
@@ -314,9 +324,11 @@ var Grid = {
 
     // A* Algorithm
     HelperAStar: function () {
-        this.resetVisited();
-        this.isSearching = true;
-        this.AStar(this.getStartPosition());
+        if (!this.isSearching) {
+            this.resetVisited();
+            this.isSearching = true;
+            this.AStar(this.getStartPosition());
+        }
     },
 
     AStar: async function (pos) {
